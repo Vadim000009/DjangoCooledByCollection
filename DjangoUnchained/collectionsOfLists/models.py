@@ -9,4 +9,4 @@ class Student(models.Model):
     averageMark = models.FloatField("Average mark")
 
     def __str__(self):
-        return str(self.fstName) + str(self.secName) + str(self.patronymic) + str(self.averageMark)
+        return str(self.fstName) + " " + str(self.secName) + " " + str(self.patronymic)
