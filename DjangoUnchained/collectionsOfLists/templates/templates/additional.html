@@ -1,47 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 {% block head %}
+<head>
     <meta charset="UTF-8">
     <title>Add new student</title>
-{% endblock %}
-    {% block body %}
-    {% for message in messages %}
-        <div class="message {{ message.tags }}">
-            {{ message }}
-        </div>
-    {% endfor %}
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
         <form action="/student/add/" method="post">
             {% csrf_token %}
             <fieldset>
-            <legend>Add Student</legend>
-                <div>
-                  <label for="fstNameInput">Name</label>
-                  <div class="col-md-4">
-                  <input id="fstNameInput" name="fstNameInput" type="text">
-                  </div>
-                </div>
-                <div>
-                  <label for="secNameInput">Surname</label>
-                  <div class="col-md-4">
-                  <input id="secNameInput" name="secNameInput" type="text">
-                  </div>
-                </div>
-                <div>
-                  <label for="patronymicInput">Patronymic</label>
-                  <div class="col-md-4">
-                  <input id="patronymicInput" name="patronymicInput" type="text">
-                  </div>
-                </div>
-                <div>
-                  <label for="markInput">Average Mark</label>
-                  <div class="col-md-4">
-                  <input id="markInput" name="markInput" type="number" min="2" max="5" step="0.1" value="2" size="2">
-                      <input type="submit" name="submit" value="OK">
-                      <input type="button" value="The list of Students" onClick='location.href="/student/"'>
-                  </div>
-                </div>
-
-            </fieldset>
-        </form>
-    {% endblock %}
+                <legend>Add Student</legend>
+                    <div>
+                        <label for="fstNameInput">Name</label>
+                        <div class="col-md-4">
+                            <input id="fstNameInput" name="fstNameInput" type="text">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="secNameInput">Surname</label>
+                        <div class="col-md-4">
+                            <input id="secNameInput" name="secNameInput" type="text">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="patronymicInput">Patronymic</label>
+                        <div class="col-md-4">
+                            <input id="patronymicInput" name="patronymicInput" type="text">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="markInput">Average Mark</label>
+                        <div class="col-md-4">
+                            <input id="markInput" name="markInput" type="number" min="2" max="5" step="0.1" value="2" size="2">
+                            <input type="submit" name="submit" value="OK">
+                            <input type="button" value="The list of Students" onClick='location.href="/student/"'>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        {% endblock %}
+    </body>
 </html>

@@ -28,14 +28,14 @@ def addStudent(request):
         patronymic = request.POST.get("patronymicInput")
         averageMark = request.POST.get("markInput")
         if (fstName or secName or patronymic or averageMark) == '':
-            messages.warning(request, 'Данные некорректны')
+            messages.error(request, 'Incorrect Data')
             return render(request, "templates/addStudent.html")
         else:
-            messages.success(request, 'Данные пришли на сервер')
             print(fstName + secName + patronymic + averageMark)
             god = Student(fstName=fstName, secName=secName, patronymic=patronymic,
-                              averageMark=averageMark)
+                          averageMark=averageMark)
             god.save()
+            messages.info(request, 'Successful send to Server')
             return render(request, "templates/additional.html")
     else:
         return HttpResponse(status=500)
