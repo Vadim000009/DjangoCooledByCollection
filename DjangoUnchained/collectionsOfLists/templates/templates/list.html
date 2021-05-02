@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Students list</title>
+</head>
+<body>
+
+    <table border = "0" cellpadding="3" >
+<caption>Table of Students</caption>
+    <tr>
+        <th width=60  align=left>Name</th>
+        <th width=110 align=left>Surname</th>
+        <th width=110 align=left>Patronymic</th>
+        <th width=200 align=left>Average Score</th>
+    </tr>
+        {% for man in student %}
+    <tr>
+        <td>{{ man.fstName }}</td>
+        <td>{{ man.secName }}</td>
+        <td>{{ man.patronymic }}</td>
+        <td>{{ man.averageMark }}</td>
+    </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
