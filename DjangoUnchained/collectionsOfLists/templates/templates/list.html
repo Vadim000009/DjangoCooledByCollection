@@ -7,7 +7,7 @@
 <body>
 
     <table border = "0" cellpadding="3" >
-<caption>Table of Students</caption>
+    <caption>Table of Students</caption>
     <tr>
         <th width=100 align=left>Name</th>
         <th width=100 align=left>Surname</th>
@@ -15,6 +15,7 @@
         <th width=100 align=left>Average Score</th>
     </tr>
         {% for man in student %}
+        <!--Если бы я раньше знал, что так можно делать, яб такие проекты бабахал бы на спринге, но там поганый NodeJs-->
     <tr>
         <td>{{ man.fstName }}</td>
         <td>{{ man.secName }}</td>
