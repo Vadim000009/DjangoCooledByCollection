@@ -15,7 +15,7 @@
             {% endfor %}
         </ul>
         {% endif %}
-        <form action="/student/add/" method="post">
+        <form action="/students/add/" method="post">
             {% csrf_token %}
             <fieldset>
                 <legend>Add Student</legend>
@@ -42,7 +42,7 @@
                         <div class="col-md-4">
                             <input id="markInput" name="markInput" type="number" min="2" max="5" step="0.1" value="2" size="2">
                             <input type="submit" name="submit" value="OK">
-                            <input type="button" value="The list of Students" onClick='location.href="/student/"'>
+                            <input type="button" value="The list of Students" onClick='location.href="/students/"'>
                         </div>
                     </div>
                 </fieldset>
