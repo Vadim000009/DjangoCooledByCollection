@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+{% load static %}
+{% block javascript %}
+	<script>
+		function saveChange() {
+			const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+			var xhr = new XMLHttpRequest();
+			xhr.onload = (e) => {
+			   window.location="";
+			};
+			//xhr.open("POST", "../change/save/", true);
+			xhr.open("POST", "/change/save/", true);
+			xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			xhr.setRequestHeader("Content-type", "application/json");
+			xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+			var nameFile = "{{nameFile}}"
+			var URL = document.getElementById("URL").textContent;
+			var title = document.getElementById("title").textContent;
+			var text = document.getElementById("text").textContent;
+			var date = document.getElementById("date").textContent;
+			var category = document.getElementById("category").textContent;
+			//var tags = document.getElementById("tags").textContent;
+			data = {
+				"nameFile": nameFile,
+				"URL": URL,
+				"title": title,
+				"text": text,
+				"date": date,
+				"category":category,
+				//"tags":tags,
+			};
+			xhr.send(JSON.stringify(data));
+			sleep(2000);
+			return false;
+		}
+
+		function deleteXml() {
+			const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+			var xhr = new XMLHttpRequest();
+				xhr.onload = (e) => {
+				window.location="";
+			};
+			//xhr.open("DELETE", "../change/delete/", true);
+			xhr.open("DELETE", "/change/delete/", true);
+			xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			xhr.setRequestHeader("Content-type", "application/json");
+			xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+			var nameFile = "{{nameFile}}"
+			data = {
+			  "nameFile": nameFile
+			};
+			xhr.send(JSON.stringify(data));
+			return false;
+		}
+	</script>
+{% endblock %}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="icon" href="{% static 'images/favicon.png' %}" type="image/png" />
+	<title>Редактирование статей - {{nameFile}} | newsru.com</title>
+</head>
+<body>
+<form onsubmit=saveChange()>
+	{% csrf_token %}
+	<div class="page">
+		<div class="content">
+			<div class="header-desc">
+				<div class="header-logo">
+					<a class="header-logo-a"><img class="header-img" src="{% static 'images/rucom_main.png' %}" border="0" title="Самые быстрые новости" /></a>
+				</div>
+				<div class="logo-px"></div>
+			</div>
+			<div class="main_row">
+				<div class="body-page-left-column">
+					<div class="menu_left">
+						<div class="main-menu-element"></div>
+						<div class="main-menu-element">
+							<a id="allnews" class="menu" href="/">ВСЕ СТАТЬИ</a>
+						</div>
+						<div class="main-menu-element">
+							<a id="dossiers_30836" class="menu-active" href="">КАТЕГОРИИ</a>
+						</div>
+						<div class="main-menu-element">
+							<a id="russia" class="menu" href="/russia/">В РОССИИ</a>
+						</div>
+						<div class="main-menu-element">
+							<a id="world" class="menu" href="/world/">В МИРЕ</a>
+						</div>
+						<div class="main-menu-element">
+							<a id="finance" class="menu" href="/finance/">ЭКОНОМИКА</a>
+						</div>
+						<div class="main-menu-element">
+							<a id="religy" class="menu" href="/dossiers/154/">РЕЛИГИЯ</a>
+						</div>
+						<div class="main-menu-element">
+							<a id="crime" class="menu" href="/dossiers/30/">КРИМИНАЛ</a>
+						</div>
+						<div class="main-menu-element">
+							<a id="sport" class="menu" href="/sport/">СПОРТ</a>
+						</div>
+						<div class="main-menu-element">
+							<a id="cinema" class="menu" href="/cinema/">КУЛЬТУРА</a>
+						</div>
+						<div class="main-menu-element">
+							<a class="menu" href="http://www.inopressa.ru/">ИНОПРЕССА</a>
+						</div>
+						<div class="main-menu-element">
+							<a id="blog" class="menu" href="/blog/">МНЕНИЯ</a>
+						</div>
+						<div class="main-menu-element">
+							<a id="realty" class="menu" href="/realty/">НЕДВИЖИМОСТЬ</a>
+						</div>
+						<div class="main-menu-element">
+							<a id="hitech" class="menu" href="/hitech/">ТЕХНОЛОГИИ</a>
+						</div>
+						<div class="main-menu-element">
+							<a id="auto" class="menu" href="/auto/">АВТО</a>
+						</div>
+						<div class="main-menu-element">
+							<a class="menu" href="http://www.meddaily.ru/">МЕДИЦИНА</a>
+						</div>
+					</div>
+				</div>
+				<div class="body-page-center-column">
+					<div class="content-main">
+						<div class="main-caption">
+							<a class="cap-link" contenteditable id="category">{{category}}</a>
+						</div>
+						<div class="article">
+							<h1 class="article-title" contenteditable id="title">{{title}}</h1>
+							<div style="display:flex;flex-direction:row;justify-content: space-between;margin:-2px;"  >
+								<div class="article-date-tags" style="width:100%;justify-content:left;">
+									<div class="article-date" contenteditable id="date">{{date}}</div>
+								</div>
+							</div>
+							<div class="article-text" contenteditable id="text">
+								{{text}}
+							</div>
+						</div>
+						<div class="article-tags-list dossieros" style="border-bottom: 1px solid #c3d2e4;"><a><strong>Теги</strong></a></div>
+						<div class="article-tags-list dossieros" style="border-bottom: 1px solid #c3d2e4;"><a><strong>Ключевые</strong></a></div>
+						<div class="article-tags-list dossieros" ><a><strong>Ссылка на статью: </strong></a><div contenteditable id="URL">{{URL}}</div></div>
+					</div>
+				</div>
+				<div class="body-page-right-column">
+					<div class="right-column-most-popular">
+						<div class="last-column-caption">Инструменты редактирования</div>
+						<div class="right-column-most-popular-list">
+							<div class="right-column-most-popular-item">
+								<div class="right-column-most-popular-date"></div>
+								<input type="submit" name="submit" value="Сохранить">
+							</div>
+							<div class="right-column-most-popular-item">
+								<div class="right-column-most-popular-date"></div>
+								<input onclick="deleteXml()" type="button" value="Удалить данный файл">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</form>
+</body>
+</html>

@@ -20,5 +20,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('students/', include("collectionsOfLists.urls")),
     path('api/', include("collectionsOfLists.urls")),
- #   path('XMLCollection/', include("XMLCollection.urls")),
+    # Окей, тут начнём писать что то более нормальное
+    #path('XMLCollection/', include("XMLCollection.urls")),
+    path('', include("XMLCollection.urls")),
 ]

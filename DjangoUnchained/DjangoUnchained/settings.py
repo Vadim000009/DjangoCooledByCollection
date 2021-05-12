@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
+import mimetypes
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,7 +31,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+mimetypes.add_type("text/css", ".css", True)
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'collectionsOfLists',
-    #'XMLCollection',
+    'XMLCollection',
 ]
 
 MIDDLEWARE = [
@@ -53,8 +55,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'DjangoUnchained.urls'
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
-STATICFILE_DIR = os.path.join(BASE_DIR, 'static')
-
 
 TEMPLATES = [
     {
@@ -124,6 +124,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = []
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

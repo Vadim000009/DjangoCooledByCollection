@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="icon" href="{% static 'images/favicon.png' %}" type="image/png" />
+	<title>Редактирование статей | newsru.com</title>
+</head>
+<body>
+<div class="page">
+    <div class="content">
+		<div class="header-desc">
+			<div class="header-logo">
+				<a class="header-logo-a"><img class="header-img" src="{% static 'images/rucom_main.png' %}" border="0" title="Самые быстрые новости" /></a>
+			</div>
+			<div class="logo-px"></div>
+		</div>
+		<form action="/change/add" method="post">
+            {% csrf_token %}
+		<div class="main_row">
+            <div class="body-page-left-column">
+                <div class="menu_left">
+					<div class="main-menu-element"></div>
+					<div class="main-menu-element">
+						<a id="allnews" class="menu" href="/">ВСЕ СТАТЬИ</a>
+					</div>
+					<div class="main-menu-element">
+						<a id="dossiers_30836" class="menu-active" href="">КАТЕГОРИИ</a>
+					</div>
+					<div class="main-menu-element">
+						<a id="russia" class="menu" href="/russia/">В РОССИИ</a>
+					</div>
+					<div class="main-menu-element">
+						<a id="world" class="menu" href="/world/">В МИРЕ</a>
+					</div>
+					<div class="main-menu-element">
+						<a id="finance" class="menu" href="/finance/">ЭКОНОМИКА</a>
+					</div>
+					<div class="main-menu-element">
+						<a id="religy" class="menu" href="/dossiers/154/">РЕЛИГИЯ</a>
+					</div>
+					<div class="main-menu-element">
+						<a id="crime" class="menu" href="/dossiers/30/">КРИМИНАЛ</a>
+					</div>
+					<div class="main-menu-element">
+						<a id="sport" class="menu" href="/sport/">СПОРТ</a>
+					</div>
+					<div class="main-menu-element">
+						<a id="cinema" class="menu" href="/cinema/">КУЛЬТУРА</a>
+					</div>
+					<div class="main-menu-element">
+						<a class="menu" href="http://www.inopressa.ru/">ИНОПРЕССА</a>
+					</div>
+					<div class="main-menu-element">
+						<a id="blog" class="menu" href="/blog/">МНЕНИЯ</a>
+					</div>
+					<div class="main-menu-element">
+						<a id="realty" class="menu" href="/realty/">НЕДВИЖИМОСТЬ</a>
+					</div>
+					<div class="main-menu-element">
+						<a id="hitech" class="menu" href="/hitech/">ТЕХНОЛОГИИ</a>
+					</div>
+					<div class="main-menu-element">
+						<a id="auto" class="menu" href="/auto/">АВТО</a>
+					</div>
+					<div class="main-menu-element">
+						<a class="menu" href="http://www.meddaily.ru/">МЕДИЦИНА</a>
+					</div>
+				</div>
+			</div>
+			<div class="body-page-center-column">
+					<div class="content-main">
+						<div class="main-caption">
+							<label for="category">Категория</label>
+                  			<input id="category" name="category" type="text" required>
+						</div>
+						<div class="article">
+							<label for="title">Заголовок</label>
+                  			<input id="title" name="title" type="text" required>
+							<div style="display:flex;flex-direction:row;justify-content: space-between;margin:-2px;"  >
+								<div class="article-date-tags" style="width:100%;justify-content:left;">
+									<div class="article-date">
+										<label for="date">Заголовок</label>
+                  						<input id="date" name="date" type="date" required></div>
+								</div>
+							</div>
+							<div class="article-text">
+								<label for="text">Текст статьи</label>
+								<textarea id="text" name="text" cols="85%" rows="30%"></textarea>
+							</div>
+						</div>
+<!--						<div class="article-tags-list dossieros" style="border-bottom: 1px solid #c3d2e4;"><a><strong>Теги</strong></a></div>-->
+<!--						<div class="article-tags-list dossieros" style="border-bottom: 1px solid #c3d2e4;"><a><strong>Ключевые</strong></a></div>-->
+						<div class="article-tags-list dossieros" style="border-bottom: 1px solid #c3d2e4;">
+							<label for="URL"><a><strong>Ссылка на статью: </strong></a></label>
+                  			<input id="URL" name="URL" type="text" required>
+						</div>
+						<div class="article-tags-list dossieros" >
+							<label for="nameFile"><a><strong>Наименование файла: </strong></a></label>
+                  			<input id="nameFile" name="nameFile" type="text" required>
+						</div>
+					</div>
+				</div>
+			<div class="body-page-right-column">
+				<div class="right-column-most-popular">
+					<div class="last-column-caption">Инструменты редактирования</div>
+					<div class="right-column-most-popular-list">
+						<div class="right-column-most-popular-item">
+							<div class="right-column-most-popular-date"></div>
+							<div class="right-column-most-popular-text"><input type="submit" name="submit" value="Создать статью"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</form>
+    </div>
+</div>
+</body>
+</html>
