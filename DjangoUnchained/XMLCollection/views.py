@@ -82,7 +82,7 @@ def delete(request):
         data = request.body.decode('utf-8')
         dataJSON = json.loads(data)
         os.remove(os.path.join("./XMLCollection/articles/", str(dataJSON["nameFile"]) + ".xml"))
-        return render(request, "startPage.html")
+        return HttpResponse(200)
 
 
 def addArticle(request):
