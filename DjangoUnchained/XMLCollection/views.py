@@ -46,15 +46,15 @@ def getArticle(request, any):
         dataText = XMLFile.find("./text").text
         dataDate = XMLFile.find("./date").text
         dataCategory = XMLFile.find("./category").text
-        # dataTags = XMLFile.find("./tags").text
+        dataTags = XMLFile.find("./tags").text
         return render(request, "news.html",
                       {"nameFile": any,
                        "URL": dataURL,
                        "title": dataTitle,
                        "text": dataText,
                        "date": dataDate,
-                       "category": dataCategory
-                       # "tags": tags
+                       "category": dataCategory,
+                       "tags": dataTags
                        })
     except (FileNotFoundError, OSError):
         return HttpResponseRedirect(reverse('XMLCollection:_start_'))
@@ -72,7 +72,7 @@ def save(request):
         XMLFile.find("./text").text = dataJSON['text']
         XMLFile.find("./date").text = dataJSON['date']
         XMLFile.find("./category").text = dataJSON['category']
-        # XMLFile.find("./tags").text = dataJSON["tags"]
+        XMLFile.find("./tags").text = dataJSON["tags"]
         XMLFile.write("XMLCollection/articles/" + str(dataJSON['nameFile']) + ".xml", encoding="utf-8")
         messages.success(request, 'Изменения сохранены')
         return HttpResponse(200)
@@ -115,12 +115,17 @@ def addArticle(request):
         categoryXmlData.attrib['type'] = "str"
         categoryXmlData.attrib['auto'] = "true"
 
+        tagsXmlData = etree.SubElement(xmlData, "category")
+        tagsXmlData.attrib['verify'] = "true"
+        tagsXmlData.attrib['type'] = "str"
+        tagsXmlData.attrib['auto'] = "true"
+
         originalURLData.text = str(request.POST.get("URL"))
         titleXmlData.text = str(request.POST.get("title"))
         textXmlData.text = str(request.POST.get("text"))
         dateXmlData.text = str(request.POST.get("date"))
         categoryXmlData.text = str(request.POST.get("category"))
-
+        tagsXmlData.text = str(request.POST.get("tags"))
         xmlTree = etree.ElementTree(xmlData)
         xmlTree.write(r"./XMLCollection/articles/" + str(request.POST.get("nameFile")) + ".xml"
                       , encoding="utf-8", xml_declaration=True, pretty_print=True)

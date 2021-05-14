@@ -21,7 +21,7 @@
 			var text = document.getElementById("text").textContent;
 			var date = document.getElementById("date").textContent;
 			var category = document.getElementById("category").textContent;
-			//var tags = document.getElementById("tags").textContent;
+			var tags = document.getElementById("tags").textContent;
 			data = {
 				"nameFile": nameFile,
 				"URL": URL,
@@ -29,10 +29,9 @@
 				"text": text,
 				"date": date,
 				"category":category,
-				//"tags":tags,
+				"tags": tags,
 			};
 			xhr.send(JSON.stringify(data));
-			sleep(2000);
 			return false;
 		}
 
@@ -86,7 +85,7 @@
 			</div>
 			<div class="main_row">
 				<div class="body-page-left-column">
-					<form method="post" action="/find" id="formID">
+					<form method="post" action="/find">
 					{% csrf_token %}
 					<div class="menu_left">
 						<div class="main-menu-element"></div>
@@ -108,16 +107,6 @@
 						</div>
 						<div class="main-menu-element">
 							{% with category="ЭКОНОМИКА" %}
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-						<div class="main-menu-element">
-							{% with category="РЕЛИГИЯ" %}
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-						<div class="main-menu-element">
-							{% with category="КРИМИНАЛ" %}
 							<input name="category" class="menu" value="{{category}}" type="submit">
 							{% endwith %}
 						</div>
@@ -153,7 +142,7 @@
 							{% endwith %}
 						</div>
 						<div class="main-menu-element">
-							{% with category="АВТО" %}
+							{% with category="АВТОНОВОСТИ" %}
 							<input name="category" class="menu" value="{{category}}" type="submit">
 							{% endwith %}
 						</div>
@@ -165,7 +154,6 @@
 					</div>
 				</form>
 				</div>
-				<form onsubmit=saveChange()>
 				<div class="body-page-center-column">
 					<div class="content-main">
 						<div class="main-caption">
@@ -182,19 +170,18 @@
 								{{text}}
 							</div>
 						</div>
-						<div class="article-tags-list dossieros" style="border-bottom: 1px solid #c3d2e4;"><a><strong>Теги</strong></a></div>
+						<div class="article-tags-list dossieros" style="border-bottom: 1px solid #c3d2e4;">Теги :<a id="tags" contenteditable><strong>{{tags}}</strong></a></div>
 						<div class="article-tags-list dossieros" style="border-bottom: 1px solid #c3d2e4;"><a><strong>Ключевые</strong></a></div>
 						<div class="article-tags-list dossieros" ><a><strong>Ссылка на статью: </strong></a><div contenteditable id="URL">{{URL}}</div></div>
 					</div>
 				</div>
-				</form>
 				<div class="body-page-right-column">
 					<div class="right-column-most-popular">
 						<div class="last-column-caption">Инструменты редактирования</div>
 						<div class="right-column-most-popular-list">
 							<div class="right-column-most-popular-item">
 								<div class="right-column-most-popular-date"></div>
-								<input type="submit" name="submit" value="Сохранить">
+								<input type="submit" onclick="saveChange()" value="Сохранить">
 							</div>
 							<div class="right-column-most-popular-item">
 								<div class="right-column-most-popular-date"></div>
