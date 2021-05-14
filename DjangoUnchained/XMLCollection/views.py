@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from lxml import etree
 
+
 # TODO: Дописать сюда сортировку, фильтр, жизнь
 
 
@@ -26,14 +27,14 @@ def getMoreArticles(request):
         for root, dirs, files in os.walk("XMLCollection/articles"):
             for filename in files:
                 articleList.append(filename)
-        paginator = Paginator(articleList, 10)
+        paginator = Paginator(articleList, 15)
         try:
             articlesFragments = paginator.page(request.GET.get('page'))
         except PageNotAnInteger:
             articlesFragments = paginator.page(1)
         except EmptyPage:
             articlesFragments = paginator.page(paginator.num_pages)
-        return render(request, "startPage.html", {"xmlPag": articlesFragments})
+        return render(request, "startPage.html", {"articlesFragments": articlesFragments})
 
 
 @csrf_exempt
@@ -47,12 +48,12 @@ def getArticle(request, any):
         dataCategory = XMLFile.find("./category").text
         # dataTags = XMLFile.find("./tags").text
         return render(request, "news.html",
-                      {"nameFile":   any,
-                       "URL":       dataURL,
-                       "title":     dataTitle,
-                       "text":      dataText,
-                       "date":      dataDate,
-                       "category":  dataCategory
+                      {"nameFile": any,
+                       "URL": dataURL,
+                       "title": dataTitle,
+                       "text": dataText,
+                       "date": dataDate,
+                       "category": dataCategory
                        # "tags": tags
                        })
     except (FileNotFoundError, OSError):
@@ -60,6 +61,7 @@ def getArticle(request, any):
 
 
 # Изменение файла асинхронно. Возможности изменения подвергаются все атрибуты, доступные на странице.
+@csrf_exempt
 def save(request):
     if request.method == 'POST' and request.is_ajax():
         data = request.body.decode('utf-8')
@@ -87,7 +89,6 @@ def delete(request):
 
 def addArticle(request):
     if request.method == 'POST':
-
         xmlData = etree.Element("doc")
         originalURLData = etree.SubElement(xmlData, "URL")
         originalURLData.attrib['verify'] = "true"
@@ -122,7 +123,43 @@ def addArticle(request):
 
         xmlTree = etree.ElementTree(xmlData)
         xmlTree.write(r"./XMLCollection/articles/" + str(request.POST.get("nameFile")) + ".xml"
-                          , encoding="utf-8", xml_declaration=True, pretty_print=True)
+                      , encoding="utf-8", xml_declaration=True, pretty_print=True)
         return render(request, "newXMLPage.html")
     if request.method == 'GET':
         return render(request, "newXMLPage.html")
+
+
+def finder(request):
+    if request.method == 'POST':
+        listSearchFiles = []
+        category = request.POST.get("category")
+
+        if category != "":
+            for root, dirs, files in os.walk("./XMLCollection/articles/"):
+                for filename in files:
+                    xmlData = etree.parse("./XMLCollection/articles/" + str(filename))
+                    if str(xmlData.find("./category").text.lower()) == str(category).lower():
+                        listSearchFiles.append(str(filename))
+        else:
+            pass
+        listSearchFiles = list(set(listSearchFiles))
+        request.session['data'] = listSearchFiles
+        paginator = Paginator(listSearchFiles, 15)
+        page = request.GET.get('page')
+        try:
+            articlesFragments = paginator.page(page)
+        except PageNotAnInteger:
+            articlesFragments = paginator.page(1)
+        except EmptyPage:
+            articlesFragments = paginator.page(paginator.num_pages)
+        return render(request, "startPage.html", {"articlesFragments": articlesFragments})
+    if request.method == "GET":
+        paginator = Paginator(request.session['data'], 15)
+        articlesFragments = request.GET.get('page')
+        try:
+            articlesFragments = paginator.page(request.GET.get('page'))
+        except PageNotAnInteger:
+            articlesFragments = paginator.page(1)
+        except EmptyPage:
+            articlesFragments = paginator.page(paginator.num_pages)
+        return render(request, "startPage.html", {"articlesFragments": articlesFragments})

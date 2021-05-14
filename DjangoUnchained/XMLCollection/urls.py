@@ -8,4 +8,6 @@ urlpatterns = [
     path('change/add', views.addArticle, name="_add_"),
     path('change/save', views.save, name="_save_"),
     path('change/delete', views.delete, name="_delete_"),
+    path('find', views.finder, name="_finder_"),
+    path('find/<str:any>.xml', views.getArticle, name="_finderArticle_"),
 ]
