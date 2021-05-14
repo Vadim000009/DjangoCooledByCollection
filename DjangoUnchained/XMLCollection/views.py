@@ -10,14 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from lxml import etree
 
 
-# TODO: Дописать сюда сортировку, фильтр, жизнь
-
-
-# Получаем текущее положение.
-def get_current_path(request):
-    return {
-        'current_path': request.get_full_path()
-    }
+# TODO: Дописать сюда жизнь
 
 
 @csrf_exempt
@@ -28,13 +21,16 @@ def getMoreArticles(request):
             for filename in files:
                 articleList.append(filename)
         paginator = Paginator(articleList, 15)
+        categories = ["", "В РОССИИ", "В МИРЕ", "ЭКОНОМИКА", "СПОРТ", "КУЛЬТУРА", "ИНОПРЕССА",
+                      "МНЕНИЯ", "НЕДВИЖИМОСТЬ", "ТЕХНОЛОГИИ", "АВТОНОВОСТИ", "МЕДИЦИНА"]
         try:
             articlesFragments = paginator.page(request.GET.get('page'))
         except PageNotAnInteger:
             articlesFragments = paginator.page(1)
         except EmptyPage:
             articlesFragments = paginator.page(paginator.num_pages)
-        return render(request, "startPage.html", {"articlesFragments": articlesFragments})
+        return render(request, "startPage.html", {"articlesFragments": articlesFragments,
+                                                  "categories": categories})
 
 
 @csrf_exempt
@@ -135,9 +131,12 @@ def addArticle(request):
 
 
 def finder(request):
+    categories = ["", "В РОССИИ", "В МИРЕ", "ЭКОНОМИКА", "СПОРТ", "КУЛЬТУРА", "ИНОПРЕССА",
+                  "МНЕНИЯ", "НЕДВИЖИМОСТЬ", "ТЕХНОЛОГИИ", "АВТОНОВОСТИ", "МЕДИЦИНА"]
     if request.method == 'POST':
         listSearchFiles = []
         category = request.POST.get("category")
+        tags = request.POST.get("tags")
 
         if category != "":
             for root, dirs, files in os.walk("./XMLCollection/articles/"):
@@ -147,6 +146,20 @@ def finder(request):
                         listSearchFiles.append(str(filename))
         else:
             pass
+        # сколько же всего предстоит сделать летом... А у меня ещё полный Титец
+
+        if tags != "":
+            for root, dirs, files in os.walk("./XMLCollection/articles/"):
+                for filename in files:
+                    xmlData = etree.parse("./XMLCollection/articles/" + str(filename))
+                    patternTags = re.compile(r"([А-Яа-я]+)|([А-Яа-я]+\s[А-Яа-я]+)")
+                    enteredTags = patternTags.findall(tags)
+                    for tag in enteredTags:
+                        print(tag)
+                        for tagTo in patternTags.findall(xmlData.find("./tags").text):
+                            if str(tag).lower() == str(tagTo).lower():
+                                listSearchFiles.append(str(filename))
+
         listSearchFiles = list(set(listSearchFiles))
         request.session['data'] = listSearchFiles
         paginator = Paginator(listSearchFiles, 15)
@@ -157,7 +170,9 @@ def finder(request):
             articlesFragments = paginator.page(1)
         except EmptyPage:
             articlesFragments = paginator.page(paginator.num_pages)
-        return render(request, "startPage.html", {"articlesFragments": articlesFragments})
+        return render(request, "startPage.html", {"articlesFragments": articlesFragments,
+                                                  "categories": categories})
+
     if request.method == "GET":
         paginator = Paginator(request.session['data'], 15)
         articlesFragments = request.GET.get('page')
@@ -167,4 +182,5 @@ def finder(request):
             articlesFragments = paginator.page(1)
         except EmptyPage:
             articlesFragments = paginator.page(paginator.num_pages)
-        return render(request, "startPage.html", {"articlesFragments": articlesFragments})
+        return render(request, "startPage.html", {"articlesFragments": articlesFragments,
+                                                  "categories": categories})

@@ -153,10 +153,31 @@
 							<div class="right-column-most-popular-date"></div>
 							<div class="right-column-most-popular-text"><a href="change/add">Создать новую статью</a></div>
 						</div>
+						<form method="post" action="/find">
+							{% csrf_token %}
 						<div class="right-column-most-popular-item">
 							<div class="right-column-most-popular-date"></div>
-							<div class="right-column-most-popular-text">Поиск по тегам</div>
+							<div class="right-column-most-popular-text">
+								<input type="search" name="tags" placeholder="Теги">
+							</div>
 						</div>
+							<div class="right-column-most-popular-item">
+							<div class="right-column-most-popular-date"></div>
+							<div class="right-column-most-popular-text">
+								<select name="category">
+                					{% for category in categories %}
+              						<option>{{category}}</option>
+                					{% endfor %}
+								</select>
+							</div>
+						</div>
+						<div class="right-column-most-popular-item">
+							<div class="right-column-most-popular-date"></div>
+							<div class="right-column-most-popular-text">
+								<input type="submit" name="submit" value="Найти статьи">
+							</div>
+						</div>
+						</form>
 					</div>
 				</div>
 			</div>
