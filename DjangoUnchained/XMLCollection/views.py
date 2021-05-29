@@ -137,8 +137,19 @@ def finder(request):
         listSearchFiles = []
         category = request.POST.get("category")
         tags = request.POST.get("tags")
+        if (tags and category) != "":
+            for root, dirs, files in os.walk("./XMLCollection/articles/"):
+                for filename in files:
+                    xmlData = etree.parse("./XMLCollection/articles/" + str(filename))
+                    if str(xmlData.find("./category").text.lower()) == str(category).lower():
+                        patternTags = re.compile(r"([А-Яа-я]+)|([А-Яа-я]+\s[А-Яа-я]+)")
+                        enteredTags = patternTags.findall(str(tags))
+                        for tag in enteredTags:
+                            for tagTo in patternTags.findall(xmlData.find("./tags").text):
+                                if str(tag).lower() == str(tagTo).lower():
+                                    listSearchFiles.append(str(filename))
 
-        if category != "":
+        if category != "" and len(tags) == 0:
             for root, dirs, files in os.walk("./XMLCollection/articles/"):
                 for filename in files:
                     xmlData = etree.parse("./XMLCollection/articles/" + str(filename))
@@ -147,20 +158,19 @@ def finder(request):
         else:
             pass
         # сколько же всего предстоит сделать летом... А у меня ещё полный Титец
-
-        if tags != "":
+        if tags != "" and len(category) == 0:
             for root, dirs, files in os.walk("./XMLCollection/articles/"):
                 for filename in files:
                     xmlData = etree.parse("./XMLCollection/articles/" + str(filename))
                     patternTags = re.compile(r"([А-Яа-я]+)|([А-Яа-я]+\s[А-Яа-я]+)")
-                    enteredTags = patternTags.findall(tags)
+                    enteredTags = patternTags.findall(str(tags))
                     for tag in enteredTags:
-                        print(tag)
                         for tagTo in patternTags.findall(xmlData.find("./tags").text):
                             if str(tag).lower() == str(tagTo).lower():
                                 listSearchFiles.append(str(filename))
 
         listSearchFiles = list(set(listSearchFiles))
+        listSearchFiles.sort()
         request.session['data'] = listSearchFiles
         paginator = Paginator(listSearchFiles, 15)
         page = request.GET.get('page')
