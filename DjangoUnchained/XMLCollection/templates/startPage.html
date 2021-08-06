@@ -131,7 +131,7 @@
 								{% for articlesFragments in articlesFragments %}
 								{# Each "articlesFragments" in xmlPagList. #}
 								{{ articlesFragments.full_name|upper }}<br/>
-								<a href="{{articlesFragments}}" class="list-group-item list-group-item-action active" contenteditable="false">{{articlesFragments}}</a>
+								<a href="id={{articlesFragments.id}}" class="list-group-item list-group-item-action active" contenteditable="false">{{articlesFragments.title}}</a>
 								{% endfor %}
 								<div class="pagination">
 									<span class="step-links">

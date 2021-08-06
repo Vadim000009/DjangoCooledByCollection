@@ -1,197 +1,99 @@
-<!DOCTYPE html>
-<html lang="ru">
 {% load static %}
-{% block javascript %}
-	<script>
+{% csrf_token %}
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script>
 		function saveChange() {
 			const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 			var xhr = new XMLHttpRequest();
 			xhr.onload = (e) => {
 			   window.location="";
 			};
-			//xhr.open("POST", "../change/save/", true);
-			xhr.open("POST", "/change/save", true);
+			xhr.open("POST", "/save", true);
 			xhr.setRequestHeader("X-CSRFToken", csrftoken);
 			xhr.setRequestHeader("Content-type", "application/json");
 			xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
-			var nameFile = "{{nameFile}}"
-			var URL = document.getElementById("URL").textContent;
-			var title = document.getElementById("title").textContent;
-			var text = document.getElementById("text").textContent;
-			var date = document.getElementById("date").textContent;
-			var category = document.getElementById("category").textContent;
-			var tags = document.getElementById("tags").textContent;
+			var articleID = "{{article.id}}"
+			var url = document.getElementById("article-url-js").textContent;
+			var title = document.getElementById("article-name").textContent;
+			var text = document.getElementById("article-text").textContent;
+			var date = document.getElementById("article-date").textContent;
+			var category = document.getElementById("article-category").textContent;
+			var keyWords = document.getElementById("article-keyWords-js").textContent;
+			var tags = document.getElementById("article-tag-js").textContent;
 			data = {
-				"nameFile": nameFile,
-				"URL": URL,
+				"id": articleID,
+				"url": url,
 				"title": title,
 				"text": text,
 				"date": date,
 				"category":category,
+				"keyWords":keyWords,
 				"tags": tags,
 			};
 			xhr.send(JSON.stringify(data));
 			return false;
 		}
-
-		function deleteXml() {
-			const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-			var xhr = new XMLHttpRequest();
-				xhr.onload = (e) => {
-				window.location="./";
-			};
-			//xhr.open("DELETE", "../change/delete/", true);
-			xhr.open("DELETE", "/change/delete", true);
-			xhr.setRequestHeader("X-CSRFToken", csrftoken);
-			xhr.setRequestHeader("Content-type", "application/json");
-			xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-			var nameFile = "{{nameFile}}"
-			data = {
-			  "nameFile": nameFile
-			};
-			xhr.send(JSON.stringify(data));
-			return false;
-		}
-	</script>
-{% endblock %}
-<style>
-	input[type=submit] {
-		width: 100%;
-		text-align: left;
-    	padding:5px 30px;
-    	background:white;
-    	border:0 none;
-    	cursor:pointer;
-    	border-radius: 5px;
-	}
-</style>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+</script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/news.css' %}">
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="icon" href="{% static 'images/favicon.png' %}" type="image/png" />
-	<title>Редактирование статей - {{nameFile}} | newsru.com</title>
+	<link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/png" />
+	<title>{{article.title}} | Режим редактора</title>
 </head>
 <body>
-	{% csrf_token %}
-	<div class="page">
-		<div class="content">
-			<div class="header-desc">
-				<div class="header-logo">
-					<a class="header-logo-a"><img class="header-img" src="{% static 'images/rucom_main.png' %}" border="0" title="Самые быстрые новости" /></a>
-				</div>
-				<div class="logo-px"></div>
+<div class="header">
+	<div class="header-logo" href="www.newsru.com">
+		<img class="logo-image" src="{% static 'images/rucom_main.png' %}" border="0" title="Новости newsru.com">
+	</div>
+	<div class="splash"></div>
+	<div class="space"></div>
+	<div class="splash"></div>
+	<div class="world">
+		<img class="world-image" src="{% static 'images/map_dots.png' %}" border="0">
+	</div>
+</div>
+<div class="main">
+	<div class="menu">
+		<div class="menu-element">
+			<a href="/">ВСЕ СТАТЬИ</a>
+		</div>
+		<div class="menu-element" style="background-color:#189c5b;">
+			<a style="color: white;">КАТЕГОРИИ</a>
+		</div>
+        {% for category in categories %}
+		<div class="menu-element">
+			<a href="filter={{ category }}" >{{ category }}</a>
+		</div>
+	    {% endfor %}
+    </div>
+	<div class="article">
+	<!--тут может быть пагинатор-->
+        <div class="article-category" id="article-category" contenteditable><strong>{{article.category}}</strong></div>
+			<div class="article-main">
+				<h1 class="article-name" id="article-name" contenteditable>{{article.title}}</h1>
+				<div class="article-date" id="article-date" contenteditable>{{article.date}}</div>
+				<div class="article-text" id="article-text" contenteditable>{{article.text}}</div>
 			</div>
-			<div class="main_row">
-				<div class="body-page-left-column">
-					<form method="post" action="/find">
-					{% csrf_token %}
-					<div class="menu_left">
-						<div class="main-menu-element"></div>
-						<div class="main-menu-element">
-							<a id="allnews" class="menu" href="/">ВСЕ СТАТЬИ</a>
-						</div>
-						<div class="main-menu-element">
-							<a id="dossiers_30836" class="menu-active" href="">КАТЕГОРИИ</a>
-						</div>
-						<div class="main-menu-element">
-							{% with category="В РОССИИ" %}
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-						<div class="main-menu-element">
-							{% with category="В МИРЕ" %}
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-						<div class="main-menu-element">
-							{% with category="ЭКОНОМИКА" %}
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-						<div class="main-menu-element">
-							{% with category="СПОРТ" %}
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-						<div class="main-menu-element">
-							{% with category="КУЛЬТУРА" %}
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-						<div class="main-menu-element">
-							{% with category="ИНОПРЕССА" %}
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-						<div class="main-menu-element">
-							{% with category="МНЕНИЯ" %}
-	<!--						<a id="blog" class="menu" href="/blog/">{{category}}</a>-->
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-						<div class="main-menu-element">
-							{% with category="НЕДВИЖИМОСТЬ" %}
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-						<div class="main-menu-element">
-							{% with category="ТЕХНОЛОГИИ" %}
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-						<div class="main-menu-element">
-							{% with category="АВТОНОВОСТИ" %}
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-						<div class="main-menu-element">
-							{% with category="МЕДИЦИНА" %}
-							<input name="category" class="menu" value="{{category}}" type="submit">
-							{% endwith %}
-						</div>
-					</div>
-				</form>
-				</div>
-				<div class="body-page-center-column">
-					<div class="content-main">
-						<div class="main-caption">
-							<a class="cap-link" contenteditable id="category">{{category}}</a>
-						</div>
-						<div class="article">
-							<h1 class="article-title" contenteditable id="title">{{title}}</h1>
-							<div style="display:flex;flex-direction:row;justify-content: space-between;margin:-2px;"  >
-								<div class="article-date-tags" style="width:100%;justify-content:left;">
-									<div class="article-date" contenteditable id="date">{{date}}</div>
-								</div>
-							</div>
-							<div class="article-text" contenteditable id="text">
-								{{text}}
-							</div>
-						</div>
-						<div class="article-tags-list dossieros" style="border-bottom: 1px solid #c3d2e4;">Теги :<a id="tags" contenteditable><strong>{{tags}}</strong></a></div>
-						<div class="article-tags-list dossieros" style="border-bottom: 1px solid #c3d2e4;"><a><strong>Ключевые</strong></a></div>
-						<div class="article-tags-list dossieros" ><a><strong>Ссылка на статью: </strong></a><div contenteditable id="URL">{{URL}}</div></div>
-					</div>
-				</div>
-				<div class="body-page-right-column">
-					<div class="right-column-most-popular">
-						<div class="last-column-caption">Инструменты редактирования</div>
-						<div class="right-column-most-popular-list">
-							<div class="right-column-most-popular-item">
-								<div class="right-column-most-popular-date"></div>
-								<input type="submit" onclick="saveChange()" value="Сохранить">
-							</div>
-							<div class="right-column-most-popular-item">
-								<div class="right-column-most-popular-date"></div>
-								<input onclick="deleteXml()" type="submit" value="Удалить данный файл">
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+			<div class="article-tag"><strong>Теги:</strong> <a id="article-tag-js" contenteditable>{{article.tags}}</a></div>
+            <div class="article-keyWords"><strong>Ключевые слова:</strong> <a id="article-keyWords-js" contenteditable>{{article.keyWords}}</a></div>
+			<div class="article-url"><strong>Ссылка на статью: </strong> <a id="article-url-js" contenteditable>{{article.url}}</a></div>
+	</div>
+	<div class="editor">
+        <div class="editor-element-header"><strong>РЕДАКТИРОВАНИЕ</strong></div>
+		<!--Имеет смысл добавить кнопку для фиксации работы-->
+		<div class="editor-element">
+            <input type="submit" class="button-editor" onclick="saveChange()" value="Сохранить">
+		</div>
+		<div class="editor-element">
+            {% csrf_token %}
+            <form action="/delete" method="post">
+                <input type="hidden" id="articleID" name="articleID" value="{{article.id}}">
+			    <input type="submit" class="button-editor" value="Удалить">
+            </form>
 		</div>
 	</div>
+</div>
 </body>
-</html>

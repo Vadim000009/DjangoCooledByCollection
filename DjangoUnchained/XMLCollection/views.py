@@ -4,130 +4,134 @@ import re
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
-from django.urls import reverse
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from lxml import etree
+from XMLCollection.models import Article
 
 
-# TODO: Дописать сюда жизнь
+categories = ["В РОССИИ", "В МИРЕ", "ЭКОНОМИКА", "СПОРТ", "КУЛЬТУРА", "ИНОПРЕССА",
+                "МНЕНИЯ", "НЕДВИЖИМОСТЬ", "ТЕХНОЛОГИИ", "АВТОНОВОСТИ", "МЕДИЦИНА"]
 
-
+#       Метод на получение всех статей
 @csrf_exempt
-def getMoreArticles(request):
-    if request.method == "GET":
-        articleList = []
-        for root, dirs, files in os.walk("XMLCollection/articles"):
-            for filename in files:
-                articleList.append(filename)
-        paginator = Paginator(articleList, 15)
-        categories = ["", "В РОССИИ", "В МИРЕ", "ЭКОНОМИКА", "СПОРТ", "КУЛЬТУРА", "ИНОПРЕССА",
-                      "МНЕНИЯ", "НЕДВИЖИМОСТЬ", "ТЕХНОЛОГИИ", "АВТОНОВОСТИ", "МЕДИЦИНА"]
-        try:
-            articlesFragments = paginator.page(request.GET.get('page'))
-        except PageNotAnInteger:
-            articlesFragments = paginator.page(1)
-        except EmptyPage:
-            articlesFragments = paginator.page(paginator.num_pages)
-        return render(request, "startPage.html", {"articlesFragments": articlesFragments,
-                                                  "categories": categories})
+def getArticles(request):
+    articleList = Article.objects.get_queryset().order_by('id')  # Самое верное решение
+    paginator = Paginator(articleList, 10)
+    categories = ["В РОССИИ", "В МИРЕ", "ЭКОНОМИКА", "СПОРТ", "КУЛЬТУРА", "ИНОПРЕССА",
+                  "МНЕНИЯ", "НЕДВИЖИМОСТЬ", "ТЕХНОЛОГИИ", "АВТОНОВОСТИ", "МЕДИЦИНА"]
+    try:
+        PList = paginator.page(request.GET.get('page'))
+    except PageNotAnInteger:
+        PList = paginator.page(1)
+    except EmptyPage:
+        PList = paginator.page(paginator.num_pages)
+    return render(request, "home.html", locals())
 
 
+#       Метод на получение конкретной статьи
 @csrf_exempt
 def getArticle(request, any):
-    try:
-        XMLFile = etree.parse("XMLCollection/articles/" + str(any) + ".xml")
-        dataURL = XMLFile.find("./URL").text
-        dataTitle = XMLFile.find("./title").text
-        dataText = XMLFile.find("./text").text
-        dataDate = XMLFile.find("./date").text
-        dataCategory = XMLFile.find("./category").text
-        dataTags = XMLFile.find("./tags").text
-        return render(request, "news.html",
-                      {"nameFile": any,
-                       "URL": dataURL,
-                       "title": dataTitle,
-                       "text": dataText,
-                       "date": dataDate,
-                       "category": dataCategory,
-                       "tags": dataTags
-                       })
-    except (FileNotFoundError, OSError):
-        return HttpResponseRedirect(reverse('XMLCollection:_start_'))
+    article = Article.objects.all().get(pk=any)
+    # TODO: Штуку ниже надо как то упростить, но пока оставлю так
+    categories = ["В РОССИИ", "В МИРЕ", "ЭКОНОМИКА", "СПОРТ", "КУЛЬТУРА", "ИНОПРЕССА",
+                  "МНЕНИЯ", "НЕДВИЖИМОСТЬ", "ТЕХНОЛОГИИ", "АВТОНОВОСТИ", "МЕДИЦИНА"]
+    return render(request, "news.html", locals())
 
 
-# Изменение файла асинхронно. Возможности изменения подвергаются все атрибуты, доступные на странице.
+#       Метод на внесение статей в форме
 @csrf_exempt
-def save(request):
-    if request.method == 'POST' and request.is_ajax():
-        data = request.body.decode('utf-8')
-        dataJSON = json.loads(data)
-        XMLFile = etree.parse("XMLCollection/articles/" + str(dataJSON['nameFile']) + ".xml")
-        XMLFile.find('./URL').text = dataJSON['URL']
-        XMLFile.find("./title").text = dataJSON['title']
-        XMLFile.find("./text").text = dataJSON['text']
-        XMLFile.find("./date").text = dataJSON['date']
-        XMLFile.find("./category").text = dataJSON['category']
-        XMLFile.find("./tags").text = dataJSON["tags"]
-        XMLFile.write("XMLCollection/articles/" + str(dataJSON['nameFile']) + ".xml", encoding="utf-8")
-        messages.success(request, 'Изменения сохранены')
-        return HttpResponse(200)
-
-
-# Удаление файла из директории асинхронно.
-def delete(request):
-    if request.method == 'DELETE' and request.is_ajax():
-        data = request.body.decode('utf-8')
-        dataJSON = json.loads(data)
-        os.remove(os.path.join("./XMLCollection/articles/", str(dataJSON["nameFile"]) + ".xml"))
-        return HttpResponse(200)
-
-
 def addArticle(request):
     if request.method == 'POST':
-        xmlData = etree.Element("doc")
-        originalURLData = etree.SubElement(xmlData, "URL")
-        originalURLData.attrib['verify'] = "true"
-        originalURLData.attrib['type'] = "str"
-        originalURLData.attrib['auto'] = "true"
-
-        titleXmlData = etree.SubElement(xmlData, "title")
-        titleXmlData.attrib['verify'] = "true"
-        titleXmlData.attrib['type'] = "str"
-        titleXmlData.attrib['auto'] = "true"
-
-        textXmlData = etree.SubElement(xmlData, "text")
-        textXmlData.attrib['verify'] = "true"
-        textXmlData.attrib['type'] = "str"
-        textXmlData.attrib['auto'] = "true"
-
-        dateXmlData = etree.SubElement(xmlData, "date")
-        dateXmlData.attrib['verify'] = "true"
-        dateXmlData.attrib['type'] = "str"
-        dateXmlData.attrib['auto'] = "true"
-
-        categoryXmlData = etree.SubElement(xmlData, "category")
-        categoryXmlData.attrib['verify'] = "true"
-        categoryXmlData.attrib['type'] = "str"
-        categoryXmlData.attrib['auto'] = "true"
-
-        tagsXmlData = etree.SubElement(xmlData, "category")
-        tagsXmlData.attrib['verify'] = "true"
-        tagsXmlData.attrib['type'] = "str"
-        tagsXmlData.attrib['auto'] = "true"
-
-        originalURLData.text = str(request.POST.get("URL"))
-        titleXmlData.text = str(request.POST.get("title"))
-        textXmlData.text = str(request.POST.get("text"))
-        dateXmlData.text = str(request.POST.get("date"))
-        categoryXmlData.text = str(request.POST.get("category"))
-        tagsXmlData.text = str(request.POST.get("tags"))
-        xmlTree = etree.ElementTree(xmlData)
-        xmlTree.write(r"./XMLCollection/articles/" + str(request.POST.get("nameFile")) + ".xml"
-                      , encoding="utf-8", xml_declaration=True, pretty_print=True)
-        return render(request, "newXMLPage.html")
+        article = Article()
+        article.title = str(request.POST.get("title"))
+        article.category = str(request.POST.get("category"))
+        article.date = str(request.POST.get("date"))
+        article.text = str(request.POST.get("text"))
+        article.tags = str(request.POST.get("tags"))
+        article.keyWords = str(request.POST.get("keyWords"))
+        article.url = str(request.POST.get("url"))
+        article.save()
+        # messages.info("Статья успешно создана!") TODO: доработать
+        return redirect('/')
     if request.method == 'GET':
-        return render(request, "newXMLPage.html")
+        categories = ["В РОССИИ", "В МИРЕ", "ЭКОНОМИКА", "СПОРТ", "КУЛЬТУРА", "ИНОПРЕССА",
+                      "МНЕНИЯ", "НЕДВИЖИМОСТЬ", "ТЕХНОЛОГИИ", "АВТОНОВОСТИ", "МЕДИЦИНА"]
+        return render(request, "add.html", locals())
+
+#       Метод на сохранение изменений
+@csrf_exempt
+def saveArticle(request):
+    # Получение данных
+    data = request.body.decode('utf-8')
+    dataJSON = json.loads(data)
+    # Обработка ID
+    id, updateArticle = dataJSON['id'], Article()
+    if str(id) != "":
+        updateArticle = Article.objects.get(id=id)
+    # Обновление данных
+    updateArticle.title = dataJSON['title']
+    updateArticle.category = dataJSON['category']
+    updateArticle.date = dataJSON['date']
+    updateArticle.text = dataJSON['text']
+    updateArticle.tags = dataJSON['tags']
+    updateArticle.keyWords = dataJSON['keyWords']
+    updateArticle.url = dataJSON['url']
+    updateArticle.save()
+    return HttpResponse(200)
+
+
+#       Метод на удаление статьи
+@csrf_exempt
+def delArticle(request):
+    articleToDelete = request.POST.get('articleID')
+    if str(articleToDelete) != "":
+        Article.objects.filter(id=articleToDelete).delete()
+    # Возможно стоит добавить отправку сообщения о невозможности удаления
+    return redirect('/')
+
+
+# TODO: Метод на поиск по словам и фильтру
+
+#       Метод на добавление статей в БД оффлайново
+@csrf_exempt
+def addArticleFromFile(request):
+    # TODO: Исправить путь
+    pathBy = r"C:\Users\1\PycharmProjects\DjangoCooledByCollection\DjangoUnchained\XMLCollection\articles"
+    files = os.listdir(pathBy)
+    article, flag = Article(), True
+    for file in files:
+        # Чтение файла
+        with open(pathBy + "\\" + file, encoding='utf-8') as fobj:
+            xml = fobj.read()
+        XMLWorker = etree.fromstring(bytes(xml, encoding='utf8'))
+        for elem in XMLWorker.getchildren():
+            if elem.tag == "title":
+                article.title = elem.text
+                # Поиск наименования статьи в БД. Если нет - уходим
+                if Article.objects.filter(title=str(article.title)):
+                    flag = False
+                    break
+            # Логика поиска нужных элементов
+            elif elem.tag == "category":
+                article.category = elem.text
+            elif elem.tag == "date":
+                article.date = elem.text
+            elif elem.tag == "text":
+                article.text = elem.text
+            elif elem.tag == "tags":
+                article.tags = elem.text
+            elif elem.tag == "keyWords":
+                article.keyWords = elem.text
+            elif elem.tag == "URL":
+                article.url = elem.text
+        if flag:
+            article.save()  # Надо придумать множественное сохранение записей в БД
+            print(file + "\tis readed and added to DataBase")
+        else:
+            print(file + "\tis already added to DataBase")
+            flag = True
+    return HttpResponse(200)
 
 
 def finder(request):
