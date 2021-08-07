@@ -33,11 +33,13 @@
             <div class="menu-element" style="background-color:#189c5b;">
                 <a style="color: white;">КАТЕГОРИИ</a>
             </div>
+            <form method="post" action="search" id="category">
             {% for category in categories %}
-            <div class="menu-element">
-                <a href="filter={{ category }}" >{{ category }}</a>
-            </div>
+                <div class="menu-element">
+                    <input type="submit" name="category" class="button-category" value="{{ category }}" />
+                </div>
             {% endfor %}
+            </form>
         </div>
         <div class="article">
         <!--тут может быть пагинатор-->

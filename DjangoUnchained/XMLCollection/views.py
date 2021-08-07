@@ -6,6 +6,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 from lxml import etree
 from XMLCollection.models import Article
 
@@ -26,7 +27,7 @@ def getArticles(request):
         PList = paginator.page(1)
     except EmptyPage:
         PList = paginator.page(paginator.num_pages)
-    return render(request, "home.html", locals())
+    return render(request, "home.html", locals()) # TODO: Эксепшены
 
 
 #       Метод на получение конкретной статьи
@@ -92,6 +93,44 @@ def delArticle(request):
 
 
 # TODO: Метод на поиск по словам и фильтру
+@csrf_exempt
+def search(request):
+    categories = ["В РОССИИ", "В МИРЕ", "ЭКОНОМИКА", "СПОРТ", "КУЛЬТУРА", "ИНОПРЕССА",
+                  "МНЕНИЯ", "НЕДВИЖИМОСТЬ", "ТЕХНОЛОГИИ", "АВТОНОВОСТИ", "МЕДИЦИНА"]
+    if request.method == 'POST':
+        # Я бился над этой проблемой пару дней, а проблема оказалась тривиальна (нахуй __iexact в SQLite).
+        # Этот костыль создан для поиска по категориям. На вопрос почему - ответ:
+        # A bug: SQLite only understands upper/lower case for ASCII characters by default.
+        # The LIKE operator is case sensitive by default for unicode characters that are beyond
+        # the ASCII range. For example, the expression 'a' LIKE 'A' is TRUE but 'æ' LIKE 'Æ' is FALSE.)
+        # Ну и ясное дело, я родился в России, а не в великой и объятной Британской колонии
+        category = request.POST.get('category')
+        if category == "В РОССИИ":
+            category = "" + category[0:3] + category[3:].lower()
+        else:
+            category = "" + category[0:1] + category[1:].lower()
+        # Здесь костыль заканчивается
+        articleList = Article.objects.filter(category=category)
+        paginator = Paginator(articleList, 10)
+        try:
+            PList = paginator.page(request.GET.get('page'))
+        except PageNotAnInteger:
+            PList = paginator.page(1)
+        except EmptyPage:
+            PList = paginator.page(paginator.num_pages)
+        return render(request, "home.html", locals()) # TODO: Эксепшены
+    # Переход по страницам
+    if request.method == "GET":
+        paginator = Paginator(request.session['data'], 10)
+        articleList = request.GET.get('page')
+        try:
+            PList = paginator.page(request.GET.get('page'))
+        except PageNotAnInteger:
+            PList = paginator.page(1)
+        except EmptyPage:
+            PList = paginator.page(paginator.num_pages)
+        return render(request, "home.html", locals())
+
 
 #       Метод на добавление статей в БД оффлайново
 @csrf_exempt
@@ -133,7 +172,7 @@ def addArticleFromFile(request):
             flag = True
     return HttpResponse(200)
 
-
+# TODO: НА УДАЛЕНИЕ
 def finder(request):
     categories = ["", "В РОССИИ", "В МИРЕ", "ЭКОНОМИКА", "СПОРТ", "КУЛЬТУРА", "ИНОПРЕССА",
                   "МНЕНИЯ", "НЕДВИЖИМОСТЬ", "ТЕХНОЛОГИИ", "АВТОНОВОСТИ", "МЕДИЦИНА"]
