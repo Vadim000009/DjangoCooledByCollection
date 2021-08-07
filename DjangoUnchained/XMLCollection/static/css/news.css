@@ -204,11 +204,26 @@ a {
 	background-color: #ffffff;
 	cursor: pointer;
 }
+
+.button-search{
+	font-family: 'Roboto', sans-serif;
+	font-size: 16px;
+	font-weight: 500;
+	padding: 5px 10px;
+	margin-top: 10px;
+	height: 29px;
+	width: 85%;
+	border: none;
+	color : #2e5a98;
+	background-color: #ffffff;
+	cursor: pointer;
+}
 .button-category {
 	font-family: 'Roboto', sans-serif;
 	font-size: 16px;
 	font-weight: 500;
 	text-align: left;
+	text-transform: uppercase;
 	padding: 4px 0 4px 10px;
 	height: 29px;
 	width: 100%;
@@ -216,4 +231,16 @@ a {
 	color : #2e5a98;
 	background-color: #ffffff;
 	cursor: pointer;
+}
+
+.open-menu
+{
+	display: none;
+	text-align: left;
+}
+.search-menu:focus ~ .open-menu,
+.search-menu:active ~ .open-menu,
+.open-menu:hover
+{
+	display: block;
 }

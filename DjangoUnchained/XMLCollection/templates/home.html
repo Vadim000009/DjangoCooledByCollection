@@ -29,10 +29,10 @@
 		<div class="menu-element" style="background-color:#189c5b;">
 			<a style="color: white;">КАТЕГОРИИ</a>
 		</div>
-        <form method="post" action="search" id="category">
+        <form method="post" action="search" id="keyWord">
             {% for category in categories %}
                 <div class="menu-element">
-                    <input type="submit" name="category" class="button-category" value="{{ category }}" />
+                    <input type="submit" name="keyWord" class="button-category" value="{{ category }}" />
                 </div>
             {% endfor %}
         </form>
@@ -61,7 +61,38 @@
             <a href="add">Содзать статью</a>
 		</div>
 		<div class="editor-element">
-			<a>Поиск</a>
+            <form method="post" action="search" id="category">
+                <a class="search-menu" href="javascript:void(0);" tabindex="1" >Найти статью</a>
+                    <ul class="open-menu">
+                        <li>
+                            <a>Категория</a>
+                            <select name="category">
+                            <option></option>
+                            {% for category in categories %}
+                                <option>{{category}}</option>
+                            {% endfor %}
+                        </select>
+                        </li>
+                        <li>
+                            <a>Теги</a>
+                            <input type="text" name="keyWord" placeholder="Теги">
+                        </li>
+                        <li>
+                            <a>Ключевое слово</a>
+                            <input type="text" name="keyWord" placeholder="Ключевые слова">
+                        </li>
+                        <li>
+                            <a>Название заголовка</a>
+                            <input type="text" name="keyWord" placeholder="Заголовок">
+                        </li>
+    {#                    <li>#}
+    {#                        <a>Дата публикации</a>#}
+    {#                        <input type="date" name="date">#}
+    {#                    </li>#}
+                        <input type="submit" class="button-search" value="Поиск!">
+                        <div style="height: 100px"></div>
+                    </ul>
+            </form>
 		</div>
 	</div>
 </div>

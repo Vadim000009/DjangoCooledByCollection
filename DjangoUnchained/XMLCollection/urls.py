@@ -3,9 +3,6 @@ from . import views
 
 
 urlpatterns = [
-    #path('find', views.finder, name="_finder_"),
-    #path('find/<str:any>.xml', views.getArticle, name="_finderArticle_"),
-
     path("", views.getArticles, name="_article_list_"),             # Получить все статьи
     path('id=<int:any>', views.getArticle, name="_article_"),       # Получить определённую статью
     path('add', views.addArticle, name="_add_"),                    # Создать статью
