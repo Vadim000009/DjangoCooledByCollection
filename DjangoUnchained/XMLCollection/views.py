@@ -106,19 +106,21 @@ def search(request):
         # else:
         #     category = "" + category[0:1] + category[1:].lower()
         # Здесь костыль заканчивается
-        # category = request.POST.get('category')
-        # tag = request.POST.get('tag')
-        keyWord = request.POST.get('keyWord')
-        # title = request.POST.get('title')
+        listToCheck = {'category': request.POST.get('category'),
+                       'tag': request.POST.get('tag'),
+                       'keyWord': request.POST.get('keyWord'),
+                       'title': request.POST.get('title')}
         # print(category + "s" + tag + "f" + keyWord + "c" + title)
         # print(tag)
         # articleList = Article.objects.filter(Q(category=category) | Q(tags=tag))
+
+
         # https://qna.habr.com/q/938809 # Доделать поиск
-        articleList = Q()  # создаем первый объект Q, что бы складывать с ним другие
-        for key in ['category', 'tag', 'keyWord', 'title']:
-            value = request.GET.get(key)
-            if value and keyWord != "":
-                articleList |= Q(**{f'{key}__icontains': keyWord})
+        # articleList = Q()  # создаем первый объект Q, что бы складывать с ним другие
+        # for key in ['category', 'tag', 'keyWord', 'title']:
+        #     value = request.GET.get(key)
+        #     if value and keyWord != "":
+        #         articleList |= Q(**{f'{key}__icontains': keyWord})
         paginator = Paginator(articleList, 10)
         try:
             PList = paginator.page(request.GET.get('page'))
