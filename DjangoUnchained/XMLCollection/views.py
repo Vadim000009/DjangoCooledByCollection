@@ -11,13 +11,17 @@ from lxml import etree
 from XMLCollection.models import Article
 
 
+def category():
+    return ["В России", "В мире", "Экономика", "Спорт", "Культура", "Инопресса",
+            "Мнения", "Недвижимость", "Технологии", "Автоновости", "Медицина"]
+
+
 #       Метод на получение всех статей
 @csrf_exempt
 def getArticles(request):
     articleList = Article.objects.get_queryset().order_by('id')  # Самое верное решение
     paginator = Paginator(articleList, 10)
-    categories = ["В России", "В мире", "Экономика", "Спорт", "Культура", "Инопресса",
-                  "Мнения", "Недвижимость", "Технологии", "Автоновости", "Медицина"]
+    categories = category()
     try:
         PList = paginator.page(request.GET.get('page'))
     except PageNotAnInteger:
@@ -31,9 +35,7 @@ def getArticles(request):
 @csrf_exempt
 def getArticle(request, any):
     article = Article.objects.all().get(pk=any)
-    # TODO: Штуку ниже надо как то упростить, но пока оставлю так
-    categories = ["В России", "В мире", "Экономика", "Спорт", "Культура", "Инопресса",
-                  "Мнения", "Недвижимость", "Технологии", "Автоновости", "Медицина"]
+    categories = category()
     return render(request, "news.html", locals())
 
 
@@ -53,9 +55,9 @@ def addArticle(request):
         # messages.info("Статья успешно создана!") TODO: доработать
         return redirect('/')
     if request.method == 'GET':
-        categories = ["В России", "В мире", "Экономика", "Спорт", "Культура", "Инопресса",
-                      "Мнения", "Недвижимость", "Технологии", "Автоновости", "Медицина"]
+        categories = category()
         return render(request, "add.html", locals())
+
 
 #       Метод на сохранение изменений
 @csrf_exempt
@@ -89,11 +91,9 @@ def delArticle(request):
     return redirect('/')
 
 
-# TODO: Метод на поиск по словам и фильтру
 @csrf_exempt
 def search(request):
-    categories = ["В России", "В мире", "Экономика", "Спорт", "Культура", "Инопресса",
-                  "Мнения", "Недвижимость", "Технологии", "Автоновости", "Медицина"]
+    categories = category()
     if request.method == 'POST':
         # Я бился над этой проблемой пару дней, а проблема оказалась тривиальна (нахуй __iexact в SQLite).
         # Этот костыль создан для поиска по категориям. На вопрос почему - ответ:
@@ -101,26 +101,28 @@ def search(request):
         # The LIKE operator is case sensitive by default for unicode characters that are beyond
         # the ASCII range. For example, the expression 'a' LIKE 'A' is TRUE but 'æ' LIKE 'Æ' is FALSE.)
         # Ну и ясное дело, я родился в России, а не в великой и объятной Британской колонии
-        # if category == "В России":
-        #     category = "" + category[0:3] + category[3:].lower()
-        # else:
-        #     category = "" + category[0:1] + category[1:].lower()
-        # Здесь костыль заканчивается
-        listToCheck = {'category': request.POST.get('category'),
-                       'tag': request.POST.get('tag'),
-                       'keyWord': request.POST.get('keyWord'),
-                       'title': request.POST.get('title')}
-        # print(category + "s" + tag + "f" + keyWord + "c" + title)
-        # print(tag)
-        # articleList = Article.objects.filter(Q(category=category) | Q(tags=tag))
 
+        # Крутой способ, но почему то не хочет работать(
+        # conditions = {'category': request.POST.get('category'),
+        #               'tag': request.POST.get('tag'),
+        #               'keyWord': request.POST.get('keyWord'),
+        #               'title': request.POST.get('title')}
+        # request = Q()
+        # for key, value in conditions.items():
+        #     if value != "":
+        #         request &= Q(**{f'{key}__icontains': value})
+        # articleList = Article.objects.filter(request)
 
-        # https://qna.habr.com/q/938809 # Доделать поиск
-        # articleList = Q()  # создаем первый объект Q, что бы складывать с ним другие
-        # for key in ['category', 'tag', 'keyWord', 'title']:
-        #     value = request.GET.get(key)
-        #     if value and keyWord != "":
-        #         articleList |= Q(**{f'{key}__icontains': keyWord})
+        filters = Q()
+        if request.POST.get('category'):
+            filters &= Q(category__icontains=request.POST.get('category'))
+        if request.POST.get('tag'):
+            filters &= Q(tags__icontains=request.POST.get('tag'))
+        if request.POST.get('keyWord'):
+            filters &= Q(keyWord__icontains=request.POST.get('keyWord'))
+        if request.POST.get('title'):
+            filters &= Q(title__icontains=request.POST.get('title'))
+        articleList = Article.objects.filter(filters)
         paginator = Paginator(articleList, 10)
         try:
             PList = paginator.page(request.GET.get('page'))
@@ -131,7 +133,7 @@ def search(request):
         return render(request, "home.html", locals())
     # Переход по страницам
     if request.method == "GET":
-        paginator = Paginator(request.session['data'], 10)
+        paginator = Paginator(request.session['data'], 10) #TODO: Пофиксить переход
         articleList = request.GET.get('page')
         try:
             PList = paginator.page(request.GET.get('page'))
@@ -147,12 +149,13 @@ def search(request):
 def addArticleFromFile(request):
     pathBy = r".\XMLCollection\articles"
     files = os.listdir(pathBy)
-    article, flag = Article(), True
+    flag = True
     for file in files:
         # Чтение файла
         with open(pathBy + "\\" + file, encoding='utf-8') as fobj:
             xml = fobj.read()
         XMLWorker = etree.fromstring(bytes(xml, encoding='utf8'))
+        article = Article()
         for elem in XMLWorker.getchildren():
             if elem.tag == "title":
                 article.title = elem.text
@@ -174,7 +177,7 @@ def addArticleFromFile(request):
             elif elem.tag == "URL":
                 article.url = elem.text
         if flag:
-            article.save()  # TODO: Надо придумать множественное сохранение записей в БД
+            article.save()
             print(file + "\tis readed and added to DataBase")
         else:
             print(file + "\tis already added to DataBase")

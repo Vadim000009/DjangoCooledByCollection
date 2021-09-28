@@ -233,14 +233,20 @@ a {
 	cursor: pointer;
 }
 
-.open-menu
-{
-	display: none;
-	text-align: left;
-}
-.search-menu:focus ~ .open-menu,
-.search-menu:active ~ .open-menu,
-.open-menu:hover
-{
-	display: block;
-}
+/*.open-menu*/
+/*{*/
+/*	display: none;*/
+/*	text-align: left;*/
+/*}*/
+/*.search-menu:focus ~ .open-menu,*/
+/*.search-menu:active ~ .open-menu,*/
+/*.open-menu:hover*/
+/*{*/
+/*	display: block;*/
+/*	text-align: left;*/
+/*}*/
+/*.open-menu:focus*/
+/*{*/
+/*	display: block;*/
+/*	text-align: left;*/
+/*}*/

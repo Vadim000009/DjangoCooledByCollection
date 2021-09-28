@@ -4,6 +4,25 @@
 <html lang="ru">
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/news.css' %}">
+<script>
+    window.onload= function() {
+	    document.getElementById('toggler').onclick = function() {
+	        openbox('box', this);
+	        return false;
+	    };
+	};
+    function openbox(id, toggler) {
+	    var div = document.getElementById(id);
+	    if(div.style.display === 'block') {
+	        div.style.display = 'none';
+	        toggler.innerHTML = 'Найти статью';
+	    }
+	    else {
+	        div.style.display = 'block';
+	        toggler.innerHTML = 'Скрыть поиск';
+	    }
+	}
+</script>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/png" />
@@ -32,7 +51,7 @@
         <form method="post" action="search" id="keyWord">
             {% for category in categories %}
                 <div class="menu-element">
-                    <input type="submit" name="keyWord" class="button-category" value="{{ category }}" />
+                    <input type="submit" name="category" class="button-category" value="{{ category }}" />
                 </div>
             {% endfor %}
         </form>
@@ -62,8 +81,8 @@
 		</div>
 		<div class="editor-element">
             <form method="post" action="search" id="category">
-                <a class="search-menu" href="javascript:void(0);" tabindex="1" >Найти статью</a>
-                    <ul class="open-menu">
+                <a class="search-menu" id="toggler">Найти статью</a>
+                    <ul class="open-menu" id="box">
                         <li>
                             <a>Категория</a>
                             <select name="category">
@@ -75,7 +94,7 @@
                         </li>
                         <li>
                             <a>Теги</a>
-                            <input type="text" name="keyWord" placeholder="Теги">
+                            <input type="text" name="tag" placeholder="Теги">
                         </li>
                         <li>
                             <a>Ключевое слово</a>
@@ -83,7 +102,7 @@
                         </li>
                         <li>
                             <a>Название заголовка</a>
-                            <input type="text" name="keyWord" placeholder="Заголовок">
+                            <input type="text" name="title" placeholder="Заголовок">
                         </li>
     {#                    <li>#}
     {#                        <a>Дата публикации</a>#}
