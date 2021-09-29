@@ -93,6 +93,7 @@ def delArticle(request):
 
 @csrf_exempt
 def search(request):
+    global articleList
     categories = category()
     if request.method == 'POST':
         # Я бился над этой проблемой пару дней, а проблема оказалась тривиальна (нахуй __iexact в SQLite).
@@ -133,8 +134,7 @@ def search(request):
         return render(request, "home.html", locals())
     # Переход по страницам
     if request.method == "GET":
-        paginator = Paginator(request.session['data'], 10) #TODO: Пофиксить переход
-        articleList = request.GET.get('page')
+        paginator = Paginator(articleList, 10)
         try:
             PList = paginator.page(request.GET.get('page'))
         except PageNotAnInteger:
