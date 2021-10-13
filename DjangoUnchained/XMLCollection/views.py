@@ -11,6 +11,15 @@ from lxml import etree
 from XMLCollection.models import Article
 
 
+# TODO: подправить страницу редактирования статей (добавить кнопку активного\неактив)
+# TODO: подправить страницу редактирования статей (подсветка ссылки и её кликабельность)
+# TODO: подправить страницу редактирования статей (стили текста при правке)
+# TODO: подправить поиск (для ключевых слов)
+# TODO: подправить поиск (регистры)
+# TODO: выводить число найденных статей
+# TODO: подправить создание статей (возможность покинуть страницу на кнопку поиска)
+# TODO: подправить стили (для google chrome)
+
 def category():
     return ["В России", "В мире", "Экономика", "Спорт", "Культура", "Инопресса",
             "Мнения", "Недвижимость", "Технологии", "Автоновости", "Медицина"]
@@ -96,12 +105,6 @@ def search(request):
     global articleList
     categories = category()
     if request.method == 'POST':
-        # Я бился над этой проблемой пару дней, а проблема оказалась тривиальна (нахуй __iexact в SQLite).
-        # Этот костыль создан для поиска по категориям. На вопрос почему - ответ:
-        # A bug: SQLite only understands upper/lower case for ASCII characters by default.
-        # The LIKE operator is case sensitive by default for unicode characters that are beyond
-        # the ASCII range. For example, the expression 'a' LIKE 'A' is TRUE but 'æ' LIKE 'Æ' is FALSE.)
-        # Ну и ясное дело, я родился в России, а не в великой и объятной Британской колонии
 
         # Крутой способ, но почему то не хочет работать(
         # conditions = {'category': request.POST.get('category'),
