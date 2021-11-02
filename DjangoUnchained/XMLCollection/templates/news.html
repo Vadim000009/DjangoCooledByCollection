@@ -36,6 +36,31 @@
 			xhr.send(JSON.stringify(data));
 			return false;
 		}
+
+		// Можно красивше, но оставлю рабочий вариант
+        function contenteditableFunc(number) {
+                if (number === 0) {
+                    $("input[value=\"Режим просмотра\"]").attr('value', "Режим редактора")
+                    $("input[onclick=\"contenteditableFunc(0)\"]").attr('onclick', "contenteditableFunc(1)")
+                    document.getElementById("article-category").contentEditable = "false";
+                    document.getElementById("article-name").contentEditable = "false";
+                    document.getElementById("article-date").contentEditable = "false";
+                    document.getElementById("article-text").contentEditable = "false";
+                    document.getElementById("article-tag-js").contentEditable = "false";
+                    document.getElementById("article-keyWords-js").contentEditable = "false";
+                    document.getElementById("article-url-js").contentEditable = "false";
+                } else {
+                    $("input[value=\"Режим редактора\"]").attr('value', "Режим просмотра")
+                    $("input[onclick=\"contenteditableFunc(1)\"]").attr('onclick', "contenteditableFunc(0)")
+                    document.getElementById("article-category").contentEditable = "true";
+                    document.getElementById("article-name").contentEditable = "true";
+                    document.getElementById("article-date").contentEditable = "true";
+                    document.getElementById("article-text").contentEditable = "true";
+                    document.getElementById("article-tag-js").contentEditable = "true";
+                    document.getElementById("article-keyWords-js").contentEditable = "true";
+                    document.getElementById("article-url-js").contentEditable = "true";
+                }
+        }
 </script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/news.css' %}">
 <head>
@@ -73,20 +98,21 @@
     </div>
 	<div class="article">
 	<!--тут может быть пагинатор-->
-        <div class="article-category" id="article-category" contenteditable><strong>{{article.category}}</strong></div>
+        <div class="article-category" id="article-category" contenteditable="False"><strong>{{article.category}}</strong></div>
 			<div class="article-main">
-				<h1 class="article-name" id="article-name" contenteditable>{{article.title}}</h1>
-				<div class="article-date" id="article-date" contenteditable>{{article.date}}</div>
-				<div class="article-text" id="article-text" contenteditable>{{article.text}}</div>
+				<h1 class="article-name" id="article-name" contenteditable="False">{{article.title}}</h1>
+				<div class="article-date" id="article-date" contenteditable="False">{{article.date}}</div>
+				<div class="article-text" id="article-text" contenteditable="False">{{article.text}}</div>
 			</div>
-			<div class="article-tag"><strong>Теги:</strong> <a id="article-tag-js" contenteditable>{{article.tags}}</a></div>
-            <div class="article-keyWords"><strong>Ключевые слова:</strong> <a id="article-keyWords-js" contenteditable>{{article.keyWords}}</a></div>
-			<div class="article-url"><strong>Ссылка на статью: </strong> <a id="article-url-js" contenteditable>{{article.url}}</a></div>
+			<div class="article-tag"><strong>Теги:</strong> <a id="article-tag-js" contenteditable="False">{{article.tags}}</a></div>
+{#            <div class="article-keyWords"><strong>Ключевые слова:</strong> <a id="article-keyWords-js" contenteditable="False">{{article.keyWords}}</a></div>#}
+			<div class="article-url"><strong>Ссылка на статью: </strong> <a id="article-url-js" contenteditable="False" href={{article.url}}>{{article.url}}</a></div>
 	</div>
 	<div class="editor">
         <div class="editor-element-header"><strong>РЕДАКТИРОВАНИЕ</strong></div>
 		<!--Имеет смысл добавить кнопку для фиксации работы-->
 		<div class="editor-element">
+            <input type="submit" class="button-editor" onclick="contenteditableFunc(1)" value="Режим редактора">
             <input type="submit" class="button-editor" onclick="saveChange()" value="Сохранить">
 		</div>
 		<div class="editor-element">

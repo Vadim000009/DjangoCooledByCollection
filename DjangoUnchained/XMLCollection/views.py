@@ -1,9 +1,7 @@
 import json
 import os
-import re
-from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
@@ -11,14 +9,7 @@ from lxml import etree
 from XMLCollection.models import Article
 
 
-# TODO: подправить страницу редактирования статей (добавить кнопку активного\неактив)
-# TODO: подправить страницу редактирования статей (подсветка ссылки и её кликабельность)
-# TODO: подправить страницу редактирования статей (стили текста при правке)
-# TODO: подправить поиск (для ключевых слов)
-# TODO: подправить поиск (регистры)
-# TODO: выводить число найденных статей
-# TODO: подправить создание статей (возможность покинуть страницу на кнопку поиска)
-# TODO: подправить стили (для google chrome)
+# TODO: подправить поиск (регистры) Скорее всего надо мерджить в другую БД
 
 def category():
     return ["В России", "В мире", "Экономика", "Спорт", "Культура", "Инопресса",
@@ -58,7 +49,7 @@ def addArticle(request):
         article.date = str(request.POST.get("date"))
         article.text = str(request.POST.get("text"))
         article.tags = str(request.POST.get("tags"))
-        article.keyWords = str(request.POST.get("keyWords"))
+        # article.keyWords = str(request.POST.get("keyWords"))
         article.url = str(request.POST.get("url"))
         article.save()
         # messages.info("Статья успешно создана!") TODO: доработать
@@ -127,6 +118,7 @@ def search(request):
         if request.POST.get('title'):
             filters &= Q(title__icontains=request.POST.get('title'))
         articleList = Article.objects.filter(filters)
+        findedNum = ", которые удовлетворяют требованиям: " + str(len(articleList))
         paginator = Paginator(articleList, 10)
         try:
             PList = paginator.page(request.GET.get('page'))
@@ -150,7 +142,7 @@ def search(request):
 #       Метод на добавление статей в БД оффлайново
 @csrf_exempt
 def addArticleFromFile(request):
-    pathBy = r".\XMLCollection\articles"
+    pathBy = r".\DjangoUnchained\XMLCollection\articles"
     files = os.listdir(pathBy)
     flag = True
     for file in files:
