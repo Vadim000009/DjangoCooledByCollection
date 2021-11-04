@@ -1,13 +1,9 @@
 import string
-import scipy
 import spacy
 import nltk
-import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import GridSearchCV, train_test_split
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem.snowball import SnowballStemmer
@@ -53,43 +49,38 @@ def text_cleaner(text):
     return lemmatizing(stemming(tokenizer(text)))
 
 
-def bagsOfWords(text, category):
+def bagsOfWords_check(text, category):
     vec = CountVectorizer(analyzer=text_cleaner)
     fill = vec.fit_transform(text)
     bow = pd.DataFrame(fill.toarray(), columns=vec.get_feature_names())
-    return coolWriter(bow, fill, category, 1)
+    return coolWriter(bow, category, 1)
 
 
-def NGrams(text, category):
+def NGrams_check(text, category):
     vec = CountVectorizer(ngram_range=(2,2), analyzer=text_cleaner)
     fill = vec.fit_transform(text)
     gram = pd.DataFrame(fill.toarray(), columns=vec.get_feature_names())
-    return coolWriter(gram, fill, category, 2)
+    return coolWriter(gram, category, 2)
 
 
-def TFIDF(text, category):
+def TFIDF_check(text, category):
     vec = TfidfVectorizer(analyzer=text_cleaner)
     fill = vec.fit_transform(text)
     tfidf = pd.DataFrame(fill.toarray(), columns=vec.get_feature_names())
-    return coolWriter(tfidf, fill, category, 3)
+    if category == 1:
+        return fill.toarray()   # Костыль, подправить
+    return coolWriter(tfidf, category, 3)
 
 
-def coolWriter(dataFrame, count, category, classificatorType):
-    if category == "религия":
-        dataFrame["category"] = np.full(len(count.getnnz(axis=1)), 1) # 1
-    elif category == "коронавирус":
-        dataFrame["category"] = np.zeros(len(count.getnnz(axis=1)))  # добавляем категорию
-    elif category == "криминал":
-        dataFrame["category"] = np.full(len(count.getnnz(axis=1)), 2) # 2
-    else:
-        print("Err in DRAM module :c")
-        return False
+def coolWriter(dataFrame, category,  classificatorType):
+    path = ".\DjangoUnchained\XMLCollection\ML\\"
+    dataFrame['CATEGORY'] = category
     if classificatorType == 1:
-        fileName = "BOW_" + category + ".csv"
+        fileName = path + "BOW.csv"
     elif classificatorType == 2:
-        fileName = "NGrams_" + category + ".csv"
+        fileName = path + "NGrams.csv"
     elif classificatorType == 3:
-        fileName = "TFIDF_" + category + ".csv"
+        fileName = path + "TFIDF.csv"
     else:
         print("Err in DRAM module :c")
         return False
