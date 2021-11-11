@@ -1,12 +1,16 @@
 import string
 import spacy
 import nltk
+import multiprocessing as cpu
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem.snowball import SnowballStemmer
+
+
+cores = cpu.cpu_count() - 2
 
 
 # Метод, верно удаляющий знаки
@@ -57,7 +61,7 @@ def bagsOfWords_check(text, category):
 
 
 def NGrams_check(text, category):
-    vec = CountVectorizer(ngram_range=(2,2), analyzer=text_cleaner)
+    vec = CountVectorizer(ngram_range=(2, 2), analyzer=text_cleaner)
     fill = vec.fit_transform(text)
     gram = pd.DataFrame(fill.toarray(), columns=vec.get_feature_names())
     return coolWriter(gram, category, 2)
