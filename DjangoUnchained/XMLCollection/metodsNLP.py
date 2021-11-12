@@ -3,6 +3,7 @@ import spacy
 import nltk
 import multiprocessing as cpu
 import pandas as pd
+import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
@@ -73,7 +74,8 @@ def TFIDF_check(text, category):
     tfidf = pd.DataFrame(fill.toarray(), columns=vec.get_feature_names())
     if category == 1:
         return fill.toarray()   # Костыль, подправить
-    return coolWriter(tfidf, category, 3)
+    else:
+        return coolWriter(tfidf, category, 3)
 
 
 def coolWriter(dataFrame, category,  classificatorType):
@@ -91,6 +93,11 @@ def coolWriter(dataFrame, category,  classificatorType):
     print(fileName)
     dataFrame.to_csv(fileName, index=False) # и сохраняем эту сборную солянку
     return True
+
+
+def zeros(arr, size):
+    arrZeros = np.zeros((1, size - len(arr[0])), dtype=np.float64)
+    return np.append(arr, arrZeros)
 
 
 # Если вдруг не установлен

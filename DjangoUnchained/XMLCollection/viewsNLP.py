@@ -95,6 +95,7 @@ def studyMLFromNLP(request):
     svmClassifier.fit(X, Y)
     model = "".join(model.split('.')[:-1])
     pickle.dump(svmClassifier, open(path + model + ".dat", 'wb'))
+    # ### Процесс поиск ЛУЧШЕГО классификатора ###
     # models = []
     # models.append(('LR', LogisticRegression(solver='liblinear', multi_class='ovr')))
     # models.append(('LDA', LinearDiscriminantAnalysis()))
@@ -113,7 +114,7 @@ def studyMLFromNLP(request):
     #     names.append(name)
     #     print('%s: %f (%f)' % (name, cv_results.mean(), cv_results.std()))
 
-    # Создаем прогноз на контрольной выборке
+    # ### Создаем прогноз на контрольной выборке, тем самым показываем, что может наш классификатор ###
     # X_train, X_validation, Y_train, Y_validation = train_test_split(X, Y, test_size=0.20, random_state=1)
     # model = GaussianNB()
     # model.fit(X_train, Y_train)
@@ -133,8 +134,9 @@ def MLclassif(request):
     loadClassifier = pickle.load(open(path + model, 'rb'))
     articleText = Article.objects.all().get(pk=454).text  # указываем лбой текст на тест
     # Вообще, стоит написать к хрени сверху ещё и тестер
-    text = nlp.text_cleaner(articleText)
-    vector = np.array(text)
-    vector = nlp.TFIDF_check(vector, 1)
-    predict = loadClassifier.predict(vector)
-    return HttpResponse("Успех!" + predict)
+    #text = nlp.text_cleaner(articleText)
+    #vector = np.array(text)
+    vector = nlp.TFIDF_check([articleText], 1)
+    vector = nlp.zeros(vector, 15698)
+    predict = loadClassifier.predict(np.asarray(vector.reshape(-1, 1)))
+    return HttpResponse(predict)
