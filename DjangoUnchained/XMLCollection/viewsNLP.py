@@ -2,8 +2,9 @@ import pandas as pd
 import pickle
 import numpy as np
 from django.http import HttpResponse
-from XMLCollection.models import Article
+from XMLCollection.models import Article # не трогать, иначе не работает
 from . import metodsNLP as nlp
+from . import apps as classif
 
 # Часть тестов для крутых ответов
 from sklearn.metrics import classification_report
@@ -131,14 +132,12 @@ def studyMLFromNLP(request):
 # TODO: Ветвление для тестирования разными классификаторами
 # TODO: попробовать w2v
 def MLclassif(request):
-    path = ".\DjangoUnchained\XMLCollection\ML\\"
-    model = "TFIDF.dat"
-    loadClassifier = pickle.load(open(path + model, 'rb'))
+    # код отсюда смотрим в apps
     articleText = Article.objects.all().get(pk=454).text  # указываем лбой текст на тест
     # Вообще, стоит написать к хрени сверху ещё и тестер
     # text = nlp.text_cleaner(articleText)
     # vector = np.array(text)
     vector = nlp.TFIDF_check([articleText], 1)
     vector = nlp.zeros(vector, 15698)
-    predict = loadClassifier.predict(np.asarray(vector.reshape(-1, 1)))
+    predict = classif.loadClassifier.predict(np.asarray(vector.reshape(-1, 1)))
     return HttpResponse(predict)
