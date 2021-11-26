@@ -1,7 +1,8 @@
 import pandas as pd
 import pickle
 import numpy as np
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from XMLCollection.models import Article # не трогать, иначе не работает
 from . import metodsNLP as nlp
 from . import apps as classif
@@ -94,10 +95,10 @@ def studyMLFromNLP(request):
             Y = np.append(Y, 8)
         elif catName == 'Экономика':
             Y = np.append(Y, 9)
-    svmClassifier = GaussianNB()  # можно применить любой классификатор, НО НАДО ДОРАБОТАТЬ ШТУКУ НИЖЕ
-    svmClassifier.fit(X, Y)
+    classifier = GaussianNB()  # можно применить любой классификатор, НО НАДО ДОРАБОТАТЬ ШТУКУ НИЖЕ
+    classifier.fit(X, Y)
     model = "".join(model.split('.')[:-1])
-    pickle.dump(svmClassifier, open(path + model + ".dat", 'wb'))
+    pickle.dump(classifier, open(path + model + ".dat", 'wb'))
     # ### Процесс поиск ЛУЧШЕГО классификатора ###
     # models = []
     # models.append(('LR', LogisticRegression(solver='liblinear', multi_class='ovr')))
@@ -129,15 +130,11 @@ def studyMLFromNLP(request):
     return HttpResponse("Успех!")
 
 
-# TODO: Ветвление для тестирования разными классификаторами
-# TODO: попробовать w2v
-def MLclassif(request):
+@csrf_exempt
+def MLclassif(request, any):
     # код отсюда смотрим в apps
-    articleText = Article.objects.all().get(pk=454).text  # указываем лбой текст на тест
-    # Вообще, стоит написать к хрени сверху ещё и тестер
-    # text = nlp.text_cleaner(articleText)
-    # vector = np.array(text)
-    vector = nlp.TFIDF_check([articleText], 1)
-    vector = nlp.zeros(vector, 15698)
-    predict = classif.loadClassifier.predict(np.asarray(vector.reshape(-1, 1)))
-    return HttpResponse(predict)
+    articleText = Article.objects.all().get(pk=any).text  # указываем лбой текст на тест
+    vector = np.asarray(nlp.TFIDF([articleText]))#.reshape(1, -1)#.reshape(-1, 1)
+    predict = classif.loadClassifier.predict(vector)
+    result = nlp.resultClassif(predict)
+    return JsonResponse("Классификатор предсказывает, что статья относится к категории '" + result + "'", safe=False)

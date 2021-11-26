@@ -10,7 +10,6 @@ from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem.snowball import SnowballStemmer
 
-
 cores = cpu.cpu_count() - 2
 
 
@@ -72,13 +71,17 @@ def TFIDF_check(text, category):
     vec = TfidfVectorizer(analyzer=text_cleaner)
     fill = vec.fit_transform(text)
     tfidf = pd.DataFrame(fill.toarray(), columns=vec.get_feature_names())
-    if category == 1:
-        return fill.toarray()   # Костыль, подправить
-    else:
-        return coolWriter(tfidf, category, 3)
+    return coolWriter(tfidf, category, 3)
 
 
-def coolWriter(dataFrame, category,  classificatorType):
+# Перегрузка метода! Спасибо, что тебя здесь нет, ъуъ
+def TFIDF(text):
+    vec = TfidfVectorizer(analyzer=text_cleaner)
+    fill = vec.fit_transform(text)
+    return fill.toarray()
+
+
+def coolWriter(dataFrame, category, classificatorType):
     path = ".\DjangoUnchained\XMLCollection\ML\\"
     dataFrame['CATEGORY'] = category
     if classificatorType == 1:
@@ -91,8 +94,31 @@ def coolWriter(dataFrame, category,  classificatorType):
         print("Err in DRAM module :c")
         return False
     print(fileName)
-    dataFrame.to_csv(fileName, index=False) # и сохраняем эту сборную солянку
+    dataFrame.to_csv(fileName, index=False)  # и сохраняем эту сборную солянку
     return True
+
+
+def resultClassif(number):
+    if number[0] == 0:
+        return "Автоновости"
+    elif number[0] == 1:
+        return "В мире"
+    elif number[0] == 2:
+        return "В России"
+    elif number[0] == 3:
+        return "Инопресса"
+    elif number[0] == 4:
+        return "Культура"
+    elif number[0] == 5:
+        return "Медицина"
+    elif number[0] == 6:
+        return "Недвижимость"
+    elif number[0] == 7:
+        return "Спорт"
+    elif number[0] == 8:
+        return "Технологии"
+    elif number[0] == 9:
+        return "Экономика"
 
 
 def zeros(arr, size):
@@ -104,4 +130,3 @@ def zeros(arr, size):
 def init():
     nltk.download()
     return True
-

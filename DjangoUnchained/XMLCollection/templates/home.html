@@ -22,6 +22,34 @@
 	        toggler.innerHTML = 'Скрыть поиск';
 	    }
 	}
+	function classificate() {
+        var chbox = document.getElementById('classifer');
+        var arrArticles = document.getElementsByClassName("article-list active");
+        if (chbox.checked) {
+            alert('Режим классификации включён');
+            for (let i = 0; i < arrArticles.length; i++) {
+                //arrArticles[i].setAttribute("href", "exam=" + arrArticles[i].id);
+                arrArticles[i].setAttribute("onclick", "start(" + arrArticles[i].id + ")")
+                arrArticles[i].setAttribute("href", "#");
+            }
+        } else {
+            alert('Режим классификации выключен');
+            for (let i = 0; i < arrArticles.length; i++) {
+                arrArticles[i].setAttribute("href", "id=" + arrArticles[i].id);
+                arrArticles[i].setAttribute("onclick", "")
+            }
+        }
+    }
+    function start(id) {
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", "exam=" + id, true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.onreadystatechange = function () {
+            var json = JSON.parse(xhr.responseText);
+            alert(json);
+        }
+        xhr.send(id);
+    }
 </script>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -62,7 +90,7 @@
         <div class="article-main">
             {% for PList in PList %}
                 <br/>
-                <a class="article-list active" href="id={{PList.id}}" contenteditable="false">{{PList.title}}</a>
+                <a id="{{PList.id}}" class="article-list active" href="id={{PList.id}}" contenteditable="false">{{PList.title}}</a>
             {% endfor %}
             <div class="pagination">
                 <span class="step-links">
@@ -80,6 +108,13 @@
             <a href="add">Содзать статью</a>
 		</div>
 		<div class="editor-element">
+            <div class="classif">
+                <a class="classif-menu">Классифицировать?</a>Нет
+                <label class="switch">
+                    <input type="checkbox" id="classifer" onchange="classificate()" value="1">
+                    <span class="slider round"></span>
+                </label>Да
+            </div>
             <form method="post" action="search" id="category">
                 <a class="search-menu" id="toggler">Найти статью</a>
                     <ul class="open-menu" id="box">

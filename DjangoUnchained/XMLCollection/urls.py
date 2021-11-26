@@ -3,7 +3,6 @@ from django.views.generic import RedirectView
 
 from . import views, viewsNLP
 
-favicon_view = RedirectView.as_view(url='./static/images/favicon.ico', permanent=True)
 
 urlpatterns = [
     path("", views.getArticles, name="_article_list_"),             # Получить все статьи
@@ -15,5 +14,6 @@ urlpatterns = [
     path('check', views.addArticleFromFile, name="_check_"),        # Сбор статей с диска
     path('learn', viewsNLP.learnNLP, name="_learn_"),               # Подготовка обучения
     path('study', viewsNLP.studyMLFromNLP, name="_study_"),         # Обучалочка
-    path('exam', viewsNLP.MLclassif, name="_exam_"),                # Экзамен
+    path('exam=<int:any>', viewsNLP.MLclassif, name="_exam_"),      # Экзамен
+    path('./static/images/favicon.ico', views.okay),
 ]
