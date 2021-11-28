@@ -21,7 +21,7 @@
 			var text = document.getElementById("article-text").textContent;
 			var date = document.getElementById("article-date").textContent;
 			var category = document.getElementById("article-category").textContent;
-			var keyWords = document.getElementById("article-keyWords-js").textContent;
+			{#var keyWords = document.getElementById("article-keyWords-js").textContent;#}
 			var tags = document.getElementById("article-tag-js").textContent;
 			data = {
 				"id": articleID,
@@ -30,7 +30,7 @@
 				"text": text,
 				"date": date,
 				"category":category,
-				"keyWords":keyWords,
+				{#"keyWords":keyWords,#}
 				"tags": tags,
 			};
 			xhr.send(JSON.stringify(data));
@@ -47,7 +47,7 @@
                     document.getElementById("article-date").contentEditable = "false";
                     document.getElementById("article-text").contentEditable = "false";
                     document.getElementById("article-tag-js").contentEditable = "false";
-                    document.getElementById("article-keyWords-js").contentEditable = "false";
+                    {#document.getElementById("article-keyWords-js").contentEditable = "false";#}
                     document.getElementById("article-url-js").contentEditable = "false";
                 } else {
                     $("input[value=\"Режим редактора\"]").attr('value', "Режим просмотра")
@@ -57,7 +57,7 @@
                     document.getElementById("article-date").contentEditable = "true";
                     document.getElementById("article-text").contentEditable = "true";
                     document.getElementById("article-tag-js").contentEditable = "true";
-                    document.getElementById("article-keyWords-js").contentEditable = "true";
+                    {#document.getElementById("article-keyWords-js").contentEditable = "true";#}
                     document.getElementById("article-url-js").contentEditable = "true";
                 }
         }

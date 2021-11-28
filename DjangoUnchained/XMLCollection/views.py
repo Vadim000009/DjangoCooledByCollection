@@ -75,7 +75,7 @@ def saveArticle(request):
     updateArticle.date = dataJSON['date']
     updateArticle.text = dataJSON['text']
     updateArticle.tags = dataJSON['tags']
-    updateArticle.keyWords = dataJSON['keyWords']
+    # updateArticle.keyWords = dataJSON['keyWords']
     updateArticle.url = dataJSON['url']
     updateArticle.save()
     return HttpResponse(200)
