@@ -178,6 +178,3 @@ def addArticleFromFile(request):
             print(file + "\tis already added to DataBase")
             flag = True
     return HttpResponse(200)
-
-def okay(request):
-    return HttpResponse('pretend-binary-data-here', content_type='image/jpeg')
