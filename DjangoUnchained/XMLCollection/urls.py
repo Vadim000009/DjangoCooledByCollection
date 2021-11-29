@@ -1,6 +1,4 @@
 from django.urls import path
-from django.views.generic import RedirectView
-
 from . import views, viewsNLP
 
 
@@ -12,8 +10,7 @@ urlpatterns = [
     path('delete', views.delArticle, name="_delete_"),              # Удалить статью
     path('search', views.search, name='_search_'),                  # Поиск статьи
     path('check', views.addArticleFromFile, name="_check_"),        # Сбор статей с диска
-    path('learn', viewsNLP.learnNLP, name="_learn_"),               # Подготовка обучения
+    path('prepare', viewsNLP.preparedLearnNLP, name="_learn_"),     # Подготовка обучения
     path('study', viewsNLP.studyMLFromNLP, name="_study_"),         # Обучалочка
     path('exam=<int:any>', viewsNLP.MLclassif, name="_exam_"),      # Экзамен
-    path('./static/images/favicon.ico', views.okay),
 ]
