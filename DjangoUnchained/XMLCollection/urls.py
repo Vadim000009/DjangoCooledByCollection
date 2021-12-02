@@ -2,6 +2,12 @@ from django.urls import path
 from . import views, viewsNLP
 
 
+handler400 = "XMLCollection.views.custom_bad_request_view"
+handler403 = "XMLCollection.views.custom_permission_denied_view"
+handler404 = "XMLCollection.views.custom_page_not_found_view"
+handler500 = "XMLCollection.views.custom_error_view"
+
+
 urlpatterns = [
     path("", views.getArticles, name="_article_list_"),             # Получить все статьи
     path('id=<int:any>', views.getArticle, name="_article_"),       # Получить определённую статью

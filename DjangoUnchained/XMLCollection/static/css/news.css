@@ -220,6 +220,7 @@ a {
 	background-color: #ffffff;
 	cursor: pointer;
 }
+
 .button-category {
 	font-family: 'Roboto', sans-serif;
 	font-size: 16px;
@@ -235,8 +236,16 @@ a {
 	cursor: pointer;
 }
 
-.classif-menu {
+.button-error {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
 
+.page-not {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .switch {

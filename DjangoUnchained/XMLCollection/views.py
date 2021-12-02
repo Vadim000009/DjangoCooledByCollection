@@ -178,3 +178,27 @@ def addArticleFromFile(request):
             print(file + "\tis already added to DataBase")
             flag = True
     return HttpResponse(200)
+
+
+def custom_bad_request_view(request, exception=None):
+    response = render_to_response('400.html', context_instance=RequestContext(request))
+    response.status_code = 400
+    return response
+
+
+def custom_permission_denied_view(request, exception=None):
+    response = render_to_response('403.html', context_instance=RequestContext(request))
+    response.status_code = 403
+    return response
+
+
+def custom_page_not_found_view(request, exception):
+    response = render_to_response('404.html', context_instance=RequestContext(request))
+    response.status_code = 404
+    return response
+
+
+def custom_error_view(request, exception=None):
+    response = render_to_response('500.html', context_instance=RequestContext(request))
+    response.status_code = 500
+    return response
