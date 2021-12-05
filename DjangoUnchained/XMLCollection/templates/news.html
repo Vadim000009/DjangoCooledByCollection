@@ -117,6 +117,7 @@
 		</div>
 		<div class="editor-element">
             {% csrf_token %}
+{#            TODO: алерт с предупреждением#}
             <form action="/delete" method="post">
                 <input type="hidden" id="articleID" name="articleID" value="{{article.id}}">
 			    <input type="submit" class="button-editor" value="Удалить">

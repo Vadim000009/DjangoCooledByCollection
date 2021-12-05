@@ -106,7 +106,13 @@
 		<!--Тутачки реализуем поиск-->
 		<div class="editor-element">
             <a href="add">Содзать статью</a>
+            <br>
 		</div>
+        <div class="editor-element">
+{#            TODO: Окошко для классификации текста#}
+            <a href="#">Классифицировать текст?</a>
+            <br>
+        </div>
 		<div class="editor-element">
             <div class="classif">
                 <a class="classif-menu">Классифицировать?</a>Нет
@@ -115,9 +121,12 @@
                     <span class="slider round"></span>
                 </label>Да
             </div>
+            <br>
+        </div>
+        <div class="editor-element">
             <form method="post" action="search" id="category">
                 <a class="search-menu" id="toggler">Найти статью</a>
-                    <ul class="open-menu" id="box">
+                    <ul style="display: none" class="open-menu" id="box">
                         <li>
                             <a>Категория</a>
                             <select name="category">
