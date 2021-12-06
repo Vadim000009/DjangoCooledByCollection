@@ -117,7 +117,7 @@ def search(request):
             filters &= Q(keyWord__icontains=request.POST.get('keyWord'))
         if request.POST.get('title'):
             filters &= Q(title__icontains=request.POST.get('title'))
-        articleList = Article.objects.filter(filters)
+        articleList = Article.objects.filter(filters).order_by('id')
         findedNum = ", которые удовлетворяют требованиям: " + str(len(articleList))
         paginator = Paginator(articleList, 10)
         try:
