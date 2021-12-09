@@ -207,6 +207,32 @@ a {
 	cursor: pointer;
 }
 
+.button-delete {
+	font-family: 'Roboto', sans-serif;
+	font-size: 16px;
+	font-weight: 500;
+	padding: 5px 10px;
+	height: 100%;
+	width: 100%;
+	border: none;
+	color : #2e5a98;
+	background-color: #ffffff;
+	cursor: pointer;
+}
+
+.button-cancel {
+	font-family: 'Roboto', sans-serif;
+	font-size: 16px;
+	font-weight: 500;
+	padding: 5px 10px;
+	height: 100%;
+	width: 100%;
+	border: none;
+	color : #2e5a98;
+	background-color: #ffffff;
+	cursor: pointer;
+}
+
 .button-search{
 	font-family: 'Roboto', sans-serif;
 	font-size: 16px;
@@ -247,6 +273,11 @@ a {
 	align-items: center;
 	justify-content: center;
 }
+
+.hidden {
+  display: none;
+}
+
 
 .switch {
   position: relative;
@@ -306,20 +337,6 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
-/*.open-menu*/
-/*{*/
-/*	display: none;*/
-/*	text-align: left;*/
-/*}*/
-/*.search-menu:focus ~ .open-menu,*/
-/*.search-menu:active ~ .open-menu,*/
-/*.open-menu:hover*/
-/*{*/
-/*	display: block;*/
-/*	text-align: left;*/
-/*}*/
-/*.open-menu:focus*/
-/*{*/
-/*	display: block;*/
-/*	text-align: left;*/
-/*}*/
+.msg-box {
+	position: center;
+}

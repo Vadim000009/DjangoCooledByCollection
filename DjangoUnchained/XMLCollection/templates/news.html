@@ -40,6 +40,7 @@
 		// Можно красивше, но оставлю рабочий вариант
         function contenteditableFunc(number) {
                 if (number === 0) {
+                    alert("Режим редактора выключен!\nНе забудьте сохранить статью!");
                     $("input[value=\"Режим просмотра\"]").attr('value', "Режим редактора")
                     $("input[onclick=\"contenteditableFunc(0)\"]").attr('onclick', "contenteditableFunc(1)")
                     document.getElementById("article-category").contentEditable = "false";
@@ -50,6 +51,7 @@
                     {#document.getElementById("article-keyWords-js").contentEditable = "false";#}
                     document.getElementById("article-url-js").contentEditable = "false";
                 } else {
+                    alert("Режим редактора включён");
                     $("input[value=\"Режим редактора\"]").attr('value', "Режим просмотра")
                     $("input[onclick=\"contenteditableFunc(1)\"]").attr('onclick', "contenteditableFunc(0)")
                     document.getElementById("article-category").contentEditable = "true";
@@ -61,6 +63,17 @@
                     document.getElementById("article-url-js").contentEditable = "true";
                 }
         }
+
+
+        (function main() {
+            document.addEventListener('DOMContentLoaded', DOMContentLoaded);
+            function DOMContentLoaded() {
+		        document.querySelector('.button-delete').addEventListener('click', showForm);
+		        document.querySelector('.button-cancel').addEventListener('click', disableForm);
+            }
+            function showForm() {document.querySelector('.msg-center').setAttribute('style', "visibility: visible");}
+            function disableForm() {document.querySelector('.msg-center').setAttribute('style', "visibility: hidden");}
+        })();
 </script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/news.css' %}">
 <head>
@@ -117,11 +130,17 @@
 		</div>
 		<div class="editor-element">
             {% csrf_token %}
-{#            TODO: алерт с предупреждением#}
-            <form action="/delete" method="post">
-                <input type="hidden" id="articleID" name="articleID" value="{{article.id}}">
-			    <input type="submit" class="button-editor" value="Удалить">
-            </form>
+			<input type="submit" class="button-delete" value="Удалить">
+            <div class="msg-center" style="visibility: hidden">
+                <div class="msg-box" style="width: 100%; height: 15%;">
+                    <p>Данная статья будет удалена. Вы уверены?</p>
+                    <form action="/delete" method="post">
+                        <input type="hidden" id="articleID" name="articleID" value="{{article.id}}">
+                        <input type="submit" class="button-editor" value="Да">
+                    </form>
+                    <input type="button" class="button-cancel" value="Нет">
+                </div>
+            </div>
 		</div>
 	</div>
 </div>
