@@ -12,10 +12,10 @@ path = ".\DjangoUnchained\XMLCollection\ML\\"
 
 
 # Метод подготовки данных
-def preparedLearnNLP(request):
+def preparedLearnNLP(request, any):
     categoryList, articleTexts = ["Автоновости", "В мире", "В России", "Инопресса", "Культура", "Медицина",
                     "Недвижимость", "Спорт", "Технологии", "Экономика"], []
-    articleList = nlp.getArticlesToNLP(categoryList)
+    articleList = nlp.getArticlesToNLP(categoryList, any)
     start_time = time.time()
     for index, categoryName in enumerate(categoryList):
         for j in articleList[index]:

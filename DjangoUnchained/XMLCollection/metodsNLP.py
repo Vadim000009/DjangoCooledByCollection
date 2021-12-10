@@ -1,8 +1,6 @@
 import string
 import spacy
 import nltk
-import pandas as pd
-import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, TfidfTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
@@ -123,10 +121,10 @@ def resultCounter(predict):
 
 
 #   РМ. Получение статей из БД с ограничением 50шт для создания обучающей и тестовой выборки
-def getArticlesToNLP(categories):
+def getArticlesToNLP(categories, lim):
     raf = [[], [], [], [], [], [], [], [], [], []]
     for index, category in enumerate(categories):
-        articles = Article.objects.filter(category=category)[:50].values_list("id", flat=True)
+        articles = Article.objects.filter(category=category)[:lim].values_list("id", flat=True)
         size = len(articles)
         for i in range(size):
             raf[index].append(Article.objects.get(id=articles[i]).id)

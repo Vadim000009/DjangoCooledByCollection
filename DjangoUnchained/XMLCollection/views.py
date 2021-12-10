@@ -51,6 +51,10 @@ def addArticle(request):
         article.tags = str(request.POST.get("tags"))
         # article.keyWords = str(request.POST.get("keyWords"))
         article.url = str(request.POST.get("url"))
+        if article.title == "None" or request.POST.get("category") == "None" \
+                or request.POST.get("date") == "None" or request.POST.get("text") == "None" \
+                or request.POST.get("tags") == "None":
+            return custom_error_view
         article.save()
         # messages.info("Статья успешно создана!") TODO: доработать
         return redirect('/')
@@ -87,7 +91,6 @@ def delArticle(request):
     articleToDelete = request.POST.get('articleID')
     if str(articleToDelete) != "":
         Article.objects.filter(id=articleToDelete).delete()
-    # Возможно стоит добавить отправку сообщения о невозможности удаления
     return redirect('/')
 
 
