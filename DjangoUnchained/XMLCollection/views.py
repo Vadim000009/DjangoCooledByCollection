@@ -147,7 +147,7 @@ def search(request):
 def addArticleFromFile(request):
     pathBy = r".\DjangoUnchained\XMLCollection\articles"
     files = os.listdir(pathBy)
-    flag = True
+    flag, quantity = True, 0
     for file in files:
         # Чтение файла
         with open(pathBy + "\\" + file, encoding='utf-8') as fobj:
@@ -177,10 +177,11 @@ def addArticleFromFile(request):
         if flag:
             article.save()
             print(file + "\tis readed and added to DataBase")
+            quantity += 1
         else:
             print(file + "\tis already added to DataBase")
             flag = True
-    return HttpResponse(200)
+    return JsonResponse("Запрос выполнен!", safe=False)
 
 
 def custom_bad_request_view(request, exception=None):
