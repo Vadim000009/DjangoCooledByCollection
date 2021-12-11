@@ -101,8 +101,11 @@ def studyClassificator(X, Y):
 
 
 #   РМ. Выдаёт результат по работе
-def resultClassification(id):
-    articleText = Article.objects.all().get(pk=id).text # текст берём в соответствии с отправленным id
+def resultClassification(id, var):
+    if var == 0:
+        articleText = Article.objects.all().get(pk=id).text # текст берём в соответствии с отправленным id
+    else:
+        articleText = str(id)
     vectorText = allSteps(articleText)
     predict = Classification.predict(vectorText)
     return resultCounter(predict)

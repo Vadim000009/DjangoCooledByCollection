@@ -18,5 +18,6 @@ urlpatterns = [
     path('check', views.addArticleFromFile, name="_check_"),                # Сбор статей с диска
     path('prepare=<int:any>', viewsNLP.preparedLearnNLP, name="_learn_"),   # Подготовка обучения
     path('study', viewsNLP.studyMLFromNLP, name="_study_"),                 # Обучалочка
-    path('exam=<int:any>', viewsNLP.MLclassif, name="_exam_"),              # Экзамен
+    path('exam=<int:any>', viewsNLP.MLclassif, name="_exam_"),              # Классификация
+    path('classificate', viewsNLP.MLclassifText, name="_classificate_"),    # Классификация текста
 ]

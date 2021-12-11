@@ -1,6 +1,7 @@
 import pandas as pd
 import pickle
 import time
+import json
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from XMLCollection.models import Article
@@ -37,5 +38,13 @@ def studyMLFromNLP(request):
 
 @csrf_exempt
 def MLclassif(request, any):
-    result = nlp.resultClassification(any)
+    result = nlp.resultClassification(any, 0)
+    return JsonResponse(result, safe=False)
+
+
+@csrf_exempt
+def MLclassifText(request):
+    data = request.body.decode('utf-8')
+    dataJSON = json.loads(data)
+    result = nlp.resultClassification(dataJSON['text'], 1)
     return JsonResponse(result, safe=False)

@@ -28,7 +28,6 @@
         if (chbox.checked) {
             alert('Режим классификации включён');
             for (let i = 0; i < arrArticles.length; i++) {
-                //arrArticles[i].setAttribute("href", "exam=" + arrArticles[i].id);
                 arrArticles[i].setAttribute("onclick", "start(" + arrArticles[i].id + ")")
                 arrArticles[i].setAttribute("href", "#");
             }
@@ -49,6 +48,29 @@
             alert(json);
         }
         xhr.send(id);
+    }
+
+
+    function check_form() {
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", "classificate", true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.onreadystatechange = function () {
+            var json = JSON.parse(xhr.responseText);
+            alert(json);
+        }
+        xhr.send(JSON.stringify({"text": document.getElementById("text-area").value}));
+    }
+
+    function loadToDB() {
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", "check", true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.onreadystatechange = function () {
+            var json = JSON.parse(xhr.responseText);
+            alert(json);
+        }
+        xhr.send();
     }
 </script>
 <head>
@@ -102,20 +124,28 @@
         </div>
 	</div>
 	<div class="editor">
-        <div class="editor-element-header"><strong>ПОИСК</strong></div>
+        <div class="editor-element-header"><strong>ДЕЙСТВИЕ</strong></div>
 		<!--Тутачки реализуем поиск-->
 		<div class="editor-element">
             <a href="add">Содзать статью</a>
             <br>
 		</div>
         <div class="editor-element">
-{#            TODO: Окошко для классификации текста#}
-            <a href="#">Классифицировать текст?</a>
+            <a href="#openModal">Классифицировать текст?</a>
+            <div id="openModal" class="modalDialog">
+	    <div>
+	        <h2>Введите текст для классификации</h2>
+            {% csrf_token %}
+            <div class="article-text" id="article-text"><textarea id="text-area" name="text" type="text" style='width: 100%; height: 30%;resize: none;' required></textarea></div>
+            <table style="margin: auto; width: 100%;"><tr><td style="float:inline-start"><input style="width: auto" type="submit" class="button-search" onclick="check_form()" value="Результат"></td>
+                <td style="float:inline-end"><a href="#close" title="Закрыть" class="button-search">Закрыть</a></td></tr></table>
+        </div>
+	</div>
             <br>
         </div>
 		<div class="editor-element">
             <div class="classif">
-                <a class="classif-menu">Классифицировать?</a>Нет
+                <a class="classif-menu">Классифицировать статью?</a>Нет
                 <label class="switch">
                     <input type="checkbox" id="classifer" onchange="classificate()" value="1">
                     <span class="slider round"></span>
@@ -123,6 +153,10 @@
             </div>
             <br>
         </div>
+        <div class="editor-element">
+            <input type="submit" class="button-search" onclick="loadToDB()" value="Загрузить в БД">
+            <br>
+		</div>
         <div class="editor-element">
             <form method="post" action="search" id="category">
                 <a class="search-menu" id="toggler">Найти статью</a>

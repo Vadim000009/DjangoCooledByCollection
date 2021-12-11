@@ -56,7 +56,6 @@ def addArticle(request):
                 or request.POST.get("tags") == "None":
             return custom_error_view
         article.save()
-        # messages.info("Статья успешно создана!") TODO: доработать
         return redirect('/')
     if request.method == 'GET':
         categories = category()
