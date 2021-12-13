@@ -186,12 +186,15 @@ a {
 }
 
 .pagination {
-	margin: 20px;
+	/*margin: 20px;*/
 	width: 100%;
 	height: auto;
-	display: inline-flex;
+	/*display: inline-flex;*/
+	display: flex;
 	justify-content: center;
-	align-items: center;
+	/*align-items: center;*/
+	align-items: flex-start;
+	flex-wrap: wrap;
 }
 
 .button-editor {

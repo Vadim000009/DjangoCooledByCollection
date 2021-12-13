@@ -115,11 +115,13 @@
                 <a id="{{PList.id}}" class="article-list active" href="id={{PList.id}}" contenteditable="false">{{PList.title}}</a>
             {% endfor %}
             <div class="pagination">
-                <span class="step-links">
+                <div class="step-links" style="display: flex;flex-flow: row nowrap;" >
+                    {% if PList.has_next %}<a class="Button" href="?page=1">В начало</a>{% endif %}
                     {% if PList.has_previous %}<a class="Button" href="?page={{ PList.previous_page_number }}">Предыдущая страница</a>{% endif %}
                     <span class="current">Страница {{ PList.number }} из {{ PList.paginator.num_pages }}</span>
                     {% if PList.has_next %}<a class="Button" href="?page={{ PList.next_page_number }}">Следущая страница</a>{% endif %}
-                </span>
+                    {% if PList.has_next %}<a class="Button" href="?page={{ PList.paginator.num_pages }}">В конец</a>{% endif %}
+                </div>
             </div>
         </div>
 	</div>
