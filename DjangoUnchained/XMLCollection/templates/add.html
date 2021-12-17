@@ -4,6 +4,16 @@
 <html lang="ru" xmlns="http://www.w3.org/1999/html">
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script>
+    function check_text() {
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", "classificate", true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.onreadystatechange = function () {
+            var json = JSON.parse(xhr.responseText);
+            alert(json + "\nЕсли классификатор предсказал верно, пожалуйста, выставите соответствующую категорию");
+        }
+        xhr.send(JSON.stringify({"text": document.getElementById("text").value}));
+    }
 </script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/news.css' %}">
 <head>
@@ -65,8 +75,7 @@
                     <input type="submit" class="button-editor" value="Создать статью">
                 </div>
                 <div class="editor-element">
-{#                    TODO: добавить сюда метод на классификацию#}
-                    <input type="submit" class="button-editor" value="Классифицировать статью">
+                    <input type="submit" class="button-editor" onclick="check_text()" value="Классифицировать статью">
                 </div>
                 <div class="editor-element">
                     <br>

@@ -138,9 +138,15 @@
 	    <div>
 	        <h2>Введите текст для классификации</h2>
             {% csrf_token %}
-            <div class="article-text" id="article-text"><textarea id="text-area" name="text" type="text" style='width: 100%; height: 30%;resize: none;' required></textarea></div>
-            <table style="margin: auto; width: 100%;"><tr><td style="float:inline-start"><input style="width: auto" type="submit" class="button-search" onclick="check_form()" value="Результат"></td>
-                <td style="float:inline-end"><a href="#close" title="Закрыть" class="button-search">Закрыть</a></td></tr></table>
+            <div class="article-text" id="article-text">
+                <textarea id="text-area" name="text" type="text" style='width: 100%; height: 30%;resize: none;' required></textarea>
+            </div>
+                <table style="margin: auto; width: 100%;">
+                    <tr>
+                        <td style="float:inline-start"><input style="width: auto" type="submit" class="button-search" onclick="check_form()" value="Результат"></td>
+                        <td style="float:inline-end"><a href="#close" title="Закрыть" class="button-search">Закрыть</a></td>
+                    </tr>
+                </table>
         </div>
 	</div>
             <br>
