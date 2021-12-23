@@ -1,7 +1,7 @@
 import json
 import os
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
@@ -144,7 +144,8 @@ def search(request):
 #       Метод на добавление статей в БД оффлайново
 @csrf_exempt
 def addArticleFromFile(request):
-    pathBy = r".\DjangoUnchained\XMLCollection\articles"
+    # pathBy = r".\DjangoUnchained\XMLCollection\articles"
+    pathBy = r"..\newsGrabb3rForCoursework\articles"
     files = os.listdir(pathBy)
     flag, quantity = True, 0
     for file in files:
@@ -175,12 +176,12 @@ def addArticleFromFile(request):
                 article.url = elem.text
         if flag:
             article.save()
-            print(file + "\tis readed and added to DataBase")
             quantity += 1
+            print(file + "\tis reading and added to DataBase")
         else:
             print(file + "\tis already added to DataBase")
             flag = True
-    return JsonResponse("Запрос выполнен!", safe=False)
+    return JsonResponse("Запрос выполнен!\nДобавлено статей " + str(quantity), safe=False)
 
 
 def custom_bad_request_view(request, exception=None):

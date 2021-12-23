@@ -88,7 +88,7 @@ def stringResultOfSlassification(arr):
 def studyClassificator(X, Y):
     model = Pipeline([('vect', CountVectorizer()), # создаём модель (analyzer=allSteps)
                       ('tfidf', TfidfTransformer()),
-                      ('clf', LogisticRegression())]) #
+                      ('clf', KNeighborsClassifier())])
     # делаем выборку
     X_train, X_validation, Y_train, Y_validation = train_test_split(X, Y, test_size=0.20, random_state=1)
     model.fit(X_train, Y_train) # Обучаем
@@ -107,6 +107,9 @@ def resultClassification(id, var):
     else:
         articleText = str(id)
     vectorText = allSteps(articleText)
+    if Classification == 0:
+        errorMessage = "Классификатор не был загружен!\nРаботал модуля классификации невозможна"
+        return errorMessage
     predict = Classification.predict(vectorText)
     return resultCounter(predict)
 

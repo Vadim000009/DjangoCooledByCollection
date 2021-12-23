@@ -4,8 +4,13 @@ from django.apps import AppConfig
 
 def loaderClassification():
     path, model = ".\DjangoUnchained\XMLCollection\ML\\", "Data.dat"
-    Classification = pickle.load(open(path + model, 'rb'))
-    print("Classificator loaded!")
+    try:
+        Classification = pickle.load(open(path + model, 'rb'))
+        print("Модель классификатора загружена!")
+    except FileNotFoundError:
+        print("Ошибка! Модель классификатора " + str(model) + " не найдена!\n"
+                    "Классификатор работать не будет. Требуется перезапуск ")
+        Classification = 0
     return Classification
 
 
