@@ -12,11 +12,8 @@ py -m spacy download ru_core_news_sm
 pip install nltk
 pip install sklearn
 pip install whitenoise
-pip install mimetypes
 pip install pandas
-pip install pickle
 pip install lxml
-pip install json
 pip install django_extensions
 pause
 cls

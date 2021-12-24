@@ -144,8 +144,12 @@ def search(request):
 #       Метод на добавление статей в БД оффлайново
 @csrf_exempt
 def addArticleFromFile(request):
-    # pathBy = r".\DjangoUnchained\XMLCollection\articles"
-    pathBy = r"..\newsGrabb3rForCoursework\articles"
+    pathBy = r".\DjangoUnchained\XMLCollection\articles"
+    if os.path.exists(pathBy):
+        pass
+    else:
+        pathBy = r".\XMLCollection\articles"
+    # pathBy = r"..\newsGrabb3rForCoursework\articles"
     files = os.listdir(pathBy)
     flag, quantity = True, 0
     for file in files:

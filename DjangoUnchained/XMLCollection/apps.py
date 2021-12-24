@@ -1,9 +1,14 @@
 import pickle
+import os
 from django.apps import AppConfig
 
 
 def loaderClassification():
     path, model = ".\DjangoUnchained\XMLCollection\ML\\", "Data.dat"
+    if os.path.exists(path):
+        pass
+    else:
+        path = ".\XMLCollection\ML\\"
     try:
         Classification = pickle.load(open(path + model, 'rb'))
         print("Модель классификатора загружена!")

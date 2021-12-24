@@ -1,5 +1,6 @@
 import pandas as pd
 import pickle
+import os
 import time
 import json
 from django.http import HttpResponse, JsonResponse
@@ -10,6 +11,10 @@ from . import metodsNLP as nlp
 
 dataFile = "Data.csv"
 path = ".\DjangoUnchained\XMLCollection\ML\\"
+if os.path.exists(path):
+    pass
+else:
+    path = ".\XMLCollection\ML\\"
 
 
 # Метод подготовки данных
@@ -32,7 +37,7 @@ def studyMLFromNLP(request):
     raw = pd.read_csv(path + dataFile)
     X, Y = raw['text'], raw['category']
     resultCorvus = nlp.studyClassificator(X, Y)
-    pickle.dump(resultCorvus, open(path + dataFile[:-3] + "dat", 'wb')) # Применяем соления для лучше консервации
+    pickle.dump(resultCorvus, open(path + dataFile[:-3] + "dat", 'wb')) # Применяем соления для лучшей консервации
     return HttpResponse("Успех!")
 
 
