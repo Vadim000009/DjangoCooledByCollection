@@ -1,2 +1,4 @@
+@echo off
 echo "Для выхода нажмите 'ctrl + c'"
-python manage.py runserver
+call env\Scripts\activate
+py manage.py runserver
