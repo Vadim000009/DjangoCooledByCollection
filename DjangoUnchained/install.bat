@@ -1,5 +1,7 @@
 @echo off
 echo Программа установки зависимостей. Сейчас будут установлены нехватающие зависимости на этото компьютер
+pipenv install
+pipenv shell
 pip install numpy
 pip install spacy
 python -m spacy download ru_core_news_sm
@@ -12,6 +14,7 @@ pip install pandas
 pip install pickle
 pip install lxml
 pip install json
+pip install Django
 pause
 echo Теперь, Приложение попробует запуститься. Если всё пройдёт успешно, то в дальнейшем запуск будет осуществляться через 'start.bat'
 echo Для выхода нажмите 'ctrl + c'
